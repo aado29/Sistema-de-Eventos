@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Vehículos</title>
+	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+	<div class="container">
+		<div class="row">
+			<nav class="navbar navbar-inverse">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						<a class="navbar-brand" href="#">Sistema</a>
+					</div>
+					<ul class="nav navbar-nav">
+						<li><a href="eventos.html">Gestión de Eventos</a></li>
+						<li><a href="grupos.html">Grupos de Rescate</a></li>
+						<li><a href="voluntarios.html">Voluntarios</a></li>
+						<li class="active"><a href="vehiculos.html">Vehiculos</a></li>
+						<li><a href="equipos.html">Equipos</a></li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Iniciar Sesión</a></li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-offset-4 col-sm-4">
+				<h2>Vehículos</h2>
+				<form>
+					<div class="form-group">
+						<label for="plate">Placa:</label>
+						<input type="text" class="form-control" id="plate">
+					</div>
+					<div class="form-group">
+						<label for="brand">Marca:</label>
+						<input type="text" class="form-control" id="brand">
+					</div>
+					<div class="form-group">
+						<label for="model">Modelo:</label>
+						<input type="text" class="form-control" id="model">
+					</div>
+					<div class="form-group">
+						<label for="color">Color:</label>
+						<input type="text" class="form-control" id="color">
+					</div>
+					<div class="form-group">
+						<label for="year">Año:</label>
+						<input type="number" class="form-control" id="year">
+					</div>
+					<div class="form-group">
+						<label for="bodywork">Numero de carrocería:</label>
+						<input type="number" class="form-control" id="bodywork">
+					</div>
+					<div class="form-group">
+						<label for="motor">Numero de Motor:</label>
+						<input type="number" class="form-control" id="motor">
+					</div>
+					<div class="form-group">
+						<label for="chassis">Chasis:</label>
+						<input type="number" class="form-control" id="chassis">
+					</div>
+					<div class="form-group">
+						<label for="state">Estado:</label>
+						<input type="text" class="form-control" id="state">
+					</div>
+					<button type="submit" class="btn btn-primary">Registrar</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+</body>
+
+</html>

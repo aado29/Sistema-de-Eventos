@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Gestión de Eventos</title>
+	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+	<div class="container">
+		<div class="row">
+			<nav class="navbar navbar-inverse">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						<a class="navbar-brand" href="#">Sistema</a>
+					</div>
+					<ul class="nav navbar-nav">
+						<li class="active"><a href="eventos.html">Gestión de Eventos</a></li>
+						<li><a href="grupos.html">Grupos de Rescate</a></li>
+						<li><a href="voluntarios.html">Voluntarios</a></li>
+						<li><a href="vehiculos.html">Vehiculos</a></li>
+						<li><a href="equipos.html">Equipos</a></li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Iniciar Sesión</a></li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-offset-4 col-sm-4">
+				<h2>Gestionar Eventos</h2>
+				<form>
+					<div class="form-group">
+						<label for="eventType">Tipo de Evento:</label>
+						<input type="text" class="form-control" id="eventType">
+					</div>
+					<div class="form-group">
+						<label for="startDate">Fecha de inicio:</label>
+						<input type="date" class="form-control" id="startDate">
+					</div>
+					<div class="form-group">
+						<label for="dueDate">Fecha de fin:</label>
+						<input type="date" class="form-control" id="dueDate">
+					</div>
+					<div class="form-group">
+						<label for="place">Lugar:</label>
+						<input type="text" class="form-control" id="place">
+					</div>
+					<div class="form-group">
+						<label for="group">Grupo:</label>
+						<select class="form-control" id="group">
+							<option>Grupo 1</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="voluntary">Voluntario:</label>
+						<select class="form-control" id="voluntary">
+							<option>Voluntario 1</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="team">Equipo:</label>
+						<select class="form-control" id="team">
+							<option>Equipo 1</option>
+						</select>
+					</div>
+					<button type="submit" class="btn btn-primary">Registrar</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+</body>
+
+</html>
