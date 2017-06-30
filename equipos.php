@@ -16,14 +16,14 @@
 						<a class="navbar-brand" href="#">Sistema</a>
 					</div>
 					<ul class="nav navbar-nav">
-						<li><a href="eventos.html">Gestión de Eventos</a></li>
-						<li><a href="grupos.html">Grupos de Rescate</a></li>
-						<li><a href="voluntarios.html">Voluntarios</a></li>
-						<li><a href="vehiculos.html">Vehiculos</a></li>
-						<li><a href="equipos.html">Equipos</a></li>
+						<li><a href="eventos.php">Gestión de Eventos</a></li>
+						<li><a href="grupos.php">Grupos de Rescate</a></li>
+						<li><a href="voluntarios.php">Voluntarios</a></li>
+						<li><a href="vehiculos.php">Vehiculos</a></li>
+						<li class="active"><a href="equipos.php">Equipos</a></li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
-						<li><a href="inicio.html"><span class="glyphicon glyphicon-log-in"></span> Iniciar Sesión</a></li>
+						<li><a href="inicio.php"><span class="glyphicon glyphicon-log-in"></span> Iniciar Sesión</a></li>
 					</ul>
 				</div>
 			</nav>
@@ -32,16 +32,21 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-offset-4 col-sm-4">
-				<h2>Iniciar Sesión</h2>
-				<form>
+				<h2>Equipos</h2>
+				<form id="form-equipo" name="equipo" method="post">
 					<div class="form-group">
-						<label for="user">Usuario:</label>
-						<input type="text" class="form-control" id="user">
+						<label for="name">Name:</label>
+						<input type="text" class="form-control" name="name">
 					</div>
 					<div class="form-group">
-						<label for="password">Contraseña:</label>
-						<input type="password" class="form-control" id="password">
+						<label for="description">Description:</label>
+						<input type="text" class="form-control" name="description">
 					</div>
+					<div class="form-group">
+						<label for="state">Estado:</label>
+						<input type="text" class="form-control" name="state">
+					</div>
+					<input type="hidden" name="formName" value="reg-equipo">
 					<button type="submit" class="btn btn-primary">Iniciar</button>
 				</form>
 			</div>
@@ -49,6 +54,7 @@
 	</div>
 	<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
 	<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="./back/master.js"></script>
 </body>
 
 </html>
