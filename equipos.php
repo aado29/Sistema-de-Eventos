@@ -74,8 +74,65 @@
 	<div class="row">
 		<div class="jumbotron">
 			<div class="row">
-				<?php if (Input::exists('get') && Input::get('show')) : ?>
+				<?php if (Input::exists('get') && Input::get('new')) : ?>
+					<div class="col-sm-offset-3 col-sm-6">
+						<h2>Equipos <a href="?" class="btn btn-primary">Ver Equipos</a></h2>
+						<form action="" method="post">
+							<div class="form-group">
+								<label for="name">Name:</label>
+								<input name="name" type="text" class="form-control" id="name">
+							</div>
+							<div class="form-group">
+								<label for="description">Description:</label>
+								<input name="description" type="text" class="form-control" id="description">
+							</div>
+							<div class="form-group">
+								<label for="state">Estado:</label>
+								<input name="state" type="text" class="form-control" id="state">
+							</div>
+							<input type="hidden" name="token" value="<?php echo Token::generate();?>">
+							<input type="submit" name="create" class="btn btn-primary" value="Registrar"/>
+						</form>
+					</div>
+				<?php elseif (Input::exists('get') && Input::get('edit')) : ?>
+					<div class="col-sm-offset-3 col-sm-6">
+						<?php $sistem = new Sistem('teams');
+						if ($sistem->get(array('id', '=', Input::get('edit')))) : 
+							$team = $sistem->data()[0]; ?>
+							<h2>Gestionar Eventos</h2>
+							<form action="" method="post">
+								<div class="form-group">
+									<label for="name">Name:</label>
+									<input name="name" type="text" class="form-control" id="name" value="<?php echo $team->name; ?>">
+								</div>
+								<div class="form-group">
+									<label for="description">Description:</label>
+									<input name="description" type="text" class="form-control" id="description" value="<?php echo $team->description; ?>">
+								</div>
+								<div class="form-group">
+									<label for="state">Estado:</label>
+									<input name="state" type="text" class="form-control" id="state" value="<?php echo $team->state; ?>">
+								</div>
+								<input type="hidden" name="id" value="<?php echo Input::get('edit');?>">
+								<input type="hidden" name="token" value="<?php echo Token::generate();?>">
+								<input type="submit" name="edit" class="btn btn-primary" value="Editar"/>
+								<input type="submit" name="delete" class="btn btn-danger pull-right" value="Eliminar"/>
+							</form>
+						<?php else :
+							if (!empty($error)) {
+								handlerMessage($error, 'danger');
+							} 
+						endif;?>
+					</div>
+				<?php else : ?>
 					<div class="col-sm-12">
+						<?php if (!empty($error)) {
+							handlerMessage($error, 'danger');
+						} ?>
+						<?php if (Session::exists('teams')) {
+							handlerMessage(Session::flash('teams'), 'success');
+						} ?>
+						<h2>Equipos <a href="?new=true" class="btn btn-primary">Nuevo Equipo</a></h2>
 						<table class="table table-striped">
 							<thead>
 								<tr>
@@ -103,61 +160,6 @@
 								<?php endif; ?>
 							</tbody>
 						</table>
-					</div>
-				<?php elseif (Input::exists('get') && Input::get('edit')) : ?>
-					<div class="col-sm-offset-3 col-sm-6">
-						<?php $sistem = new Sistem('teams');
-						if ($sistem->get(array('id', '=', Input::get('edit')))) : 
-							$team = $sistem->data()[0]; ?>
-							<h2>Gestionar Eventos</h2>
-							<form action="" method="post">
-								<div class="form-group">
-									<label for="name">Name:</label>
-									<input name="name" type="text" class="form-control" id="name" value="<?php echo $team->name; ?>">
-								</div>
-								<div class="form-group">
-									<label for="description">Description:</label>
-									<input name="description" type="text" class="form-control" id="description" value="<?php echo $team->description; ?>">
-								</div>
-								<div class="form-group">
-									<label for="state">Estado:</label>
-									<input name="state" type="text" class="form-control" id="state" value="<?php echo $team->state; ?>">
-								</div>
-								<input type="hidden" name="id" value="<?php echo Input::get('edit');?>">
-								<input type="hidden" name="token" value="<?php echo Token::generate();?>">
-								<input type="submit" name="edit" class="btn btn-primary" value="Editar"/>
-							</form>
-						<?php else :
-							if (!empty($error)) {
-								handlerMessage($error, 'danger');
-							} 
-						endif;?>
-					</div>
-				<?php else : ?>
-					<div class="col-sm-offset-3 col-sm-6">
-						<?php if (!empty($error)) {
-							handlerMessage($error, 'danger');
-						} ?>
-						<?php if (Session::exists('teams')) {
-							handlerMessage(Session::flash('teams'), 'success');
-						} ?>			
-						<h2>Equipos <a href="?show=true" class="btn btn-primary">Ver Equipos</a></h2>
-						<form action="" method="post">
-							<div class="form-group">
-								<label for="name">Name:</label>
-								<input name="name" type="text" class="form-control" id="name">
-							</div>
-							<div class="form-group">
-								<label for="description">Description:</label>
-								<input name="description" type="text" class="form-control" id="description">
-							</div>
-							<div class="form-group">
-								<label for="state">Estado:</label>
-								<input name="state" type="text" class="form-control" id="state">
-							</div>
-							<input type="hidden" name="token" value="<?php echo Token::generate();?>">
-							<input type="submit" name="create" class="btn btn-primary" value="Registrar"/>
-						</form>
 					</div>
 				<?php endif; ?>
 			</div>

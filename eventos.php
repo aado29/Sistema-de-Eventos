@@ -94,43 +94,68 @@
 	<div class="row">
 		<div class="jumbotron">
 			<div class="row">
-				<?php if (Input::exists('get') && Input::get('show')) : ?>
-					<div class="col-sm-12">
-						<table class="table table-striped">
-							<thead>
-								<tr>
-									<th>Nombre</th>
-									<th>Fecha de inicio</th>
-									<th>Fecha de fin</th>
-									<th>Lugar</th>
-									<th>Grupo</th>
-									<th>Valuntario</th>
-									<th>Equipo</th>
-									<th>Opciones</th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php $sistem = new Sistem('events');
-								if (!$sistem->get(array('id', '>', 0))) : ?>
-									<tr>
-										<td colspan="8"><h3><center>No hay registro</center></h3></td>
-									</tr>
-								<?php else :
-									foreach ($sistem->data() as $event) { ?>
-										<tr>
-											<td><?php echo $event->name; ?></td>
-											<td><?php echo $event->startDate; ?></td>
-											<td><?php echo $event->dueDate; ?></td>
-											<td><?php echo $event->place; ?></td>
-											<td><?php echo getData($event->id_group, 'groups_2', 'name'); ?></td>
-											<td><?php echo getData($event->id_voluntary, 'volunteers', 'firstName'); ?> <?php echo getData($event->id_voluntary, 'volunteers', 'lastName'); ?></td>
-											<td><?php echo getData($event->id_team, 'teams', 'name'); ?></td>
-											<td><a href="?edit=<?php echo $event->id; ?>">editar</a><td>
-										</tr>
-									<?php } ?>
-								<?php endif; ?>
-							</tbody>
-						</table>
+				<?php if (Input::exists('get') && Input::get('new')) : ?>
+					<div class="col-sm-offset-3 col-sm-6">
+						<h2>Gestionar Eventos <a href="?" class="btn btn-primary">Ver Eventos</a></h2>
+						<form action="" method="post">
+							<div class="form-group">
+								<label for="name">Tipo de Evento:</label>
+								<input name="name" type="text" class="form-control" id="name">
+							</div>
+							<div class="form-group">
+								<label for="startDate">Fecha de inicio:</label>
+								<input name="startDate" type="date" class="form-control" id="startDate">
+							</div>
+							<div class="form-group">
+								<label for="dueDate">Fecha de fin:</label>
+								<input name="dueDate" type="date" class="form-control" id="dueDate">
+							</div>
+							<div class="form-group">
+								<label for="place">Lugar:</label>
+								<input name="place" type="text" class="form-control" id="place">
+							</div>
+							<div class="form-group">
+								<label for="group">Grupo:</label>
+								<?php $sistem = new Sistem('groups_2'); ?>
+								<select name="group" class="form-control" id="group">
+									<?php if ($sistem->get(array('id', '>', 0))) : ?>
+										<?php foreach ($sistem->data() as $group) { ?>
+											<option value="<?php echo $group->id; ?>"><?php echo $group->name; ?></option>
+										<?php } ?>
+									<?php else : ?>
+										<option value="">No hay grupos registrados</option>
+									<?php endif; ?>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="voluntary">Voluntario:</label>
+								<?php $sistem = new Sistem('volunteers'); ?>
+								<select name="voluntary" class="form-control" id="voluntary">
+									<?php if ($sistem->get(array('id', '>', 0))) : ?>
+										<?php foreach ($sistem->data() as $voluntary) { ?>
+											<option value="<?php echo $voluntary->id; ?>"><?php echo $voluntary->firstName; ?> - <?php echo $voluntary->lastName; ?></option>
+										<?php } ?>
+									<?php else : ?>
+										<option value="">No hay valuntarios registrados</option>
+									<?php endif; ?>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="team">Equipo:</label>
+								<?php $sistem = new Sistem('teams'); ?>
+								<select name="team" class="form-control" id="team">
+									<?php if ($sistem->get(array('id', '>', 0))) : ?>
+										<?php foreach ($sistem->data() as $team) { ?>
+											<option value="<?php echo $team->id; ?>"><?php echo $team->name; ?></option>
+										<?php } ?>
+									<?php else : ?>
+										<option value="">No hay equipos registrados</option>
+									<?php endif; ?>
+								</select>
+							</div>
+							<input type="hidden" name="token" value="<?php echo Token::generate();?>">
+							<input type="submit" name="create" class="btn btn-primary" value="Registrar"/>
+						</form>
 					</div>
 				<?php elseif (Input::exists('get') && Input::get('edit')) : ?>
 					<div class="col-sm-offset-3 col-sm-6">
@@ -200,6 +225,7 @@
 								<input type="hidden" name="id" value="<?php echo Input::get('edit');?>">
 								<input type="hidden" name="token" value="<?php echo Token::generate();?>">
 								<input type="submit" name="edit" class="btn btn-primary" value="Editar"/>
+								<input type="submit" name="delete" class="btn btn-danger pull-right" value="Eliminar"/>
 							</form>
 						<?php else :
 							if (!empty($error)) {
@@ -208,73 +234,49 @@
 						endif;?>
 					</div>
 				<?php else : ?>
-					<div class="col-sm-offset-3 col-sm-6">
+					<div class="col-sm-12">
 						<?php if (!empty($error)) {
 							handlerMessage($error, 'danger');
 						} ?>
 						<?php if (Session::exists('events')) {
 							handlerMessage(Session::flash('events'), 'success');
 						} ?>
-						<h2>Gestionar Eventos <a href="?show=true" class="btn btn-primary">Ver Eventos</a></h2>
-						<form action="" method="post">
-							<div class="form-group">
-								<label for="name">Tipo de Evento:</label>
-								<input name="name" type="text" class="form-control" id="name">
-							</div>
-							<div class="form-group">
-								<label for="startDate">Fecha de inicio:</label>
-								<input name="startDate" type="date" class="form-control" id="startDate">
-							</div>
-							<div class="form-group">
-								<label for="dueDate">Fecha de fin:</label>
-								<input name="dueDate" type="date" class="form-control" id="dueDate">
-							</div>
-							<div class="form-group">
-								<label for="place">Lugar:</label>
-								<input name="place" type="text" class="form-control" id="place">
-							</div>
-							<div class="form-group">
-								<label for="group">Grupo:</label>
-								<?php $sistem = new Sistem('groups_2'); ?>
-								<select name="group" class="form-control" id="group">
-									<?php if ($sistem->get(array('id', '>', 0))) : ?>
-										<?php foreach ($sistem->data() as $group) { ?>
-											<option value="<?php echo $group->id; ?>"><?php echo $group->name; ?></option>
-										<?php } ?>
-									<?php else : ?>
-										<option value="">No hay grupos registrados</option>
-									<?php endif; ?>
-								</select>
-							</div>
-							<div class="form-group">
-								<label for="voluntary">Voluntario:</label>
-								<?php $sistem = new Sistem('volunteers'); ?>
-								<select name="voluntary" class="form-control" id="voluntary">
-									<?php if ($sistem->get(array('id', '>', 0))) : ?>
-										<?php foreach ($sistem->data() as $voluntary) { ?>
-											<option value="<?php echo $voluntary->id; ?>"><?php echo $voluntary->firstName; ?> - <?php echo $voluntary->lastName; ?></option>
-										<?php } ?>
-									<?php else : ?>
-										<option value="">No hay valuntarios registrados</option>
-									<?php endif; ?>
-								</select>
-							</div>
-							<div class="form-group">
-								<label for="team">Equipo:</label>
-								<?php $sistem = new Sistem('teams'); ?>
-								<select name="team" class="form-control" id="team">
-									<?php if ($sistem->get(array('id', '>', 0))) : ?>
-										<?php foreach ($sistem->data() as $team) { ?>
-											<option value="<?php echo $team->id; ?>"><?php echo $team->name; ?></option>
-										<?php } ?>
-									<?php else : ?>
-										<option value="">No hay equipos registrados</option>
-									<?php endif; ?>
-								</select>
-							</div>
-							<input type="hidden" name="token" value="<?php echo Token::generate();?>">
-							<input type="submit" name="create" class="btn btn-primary" value="Registrar"/>
-						</form>
+						<h2>Gestionar Eventos <a href="?new=true" class="btn btn-primary">Nuevo Evento</a></h2>
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Nombre</th>
+									<th>Fecha de inicio</th>
+									<th>Fecha de fin</th>
+									<th>Lugar</th>
+									<th>Grupo</th>
+									<th>Valuntario</th>
+									<th>Equipo</th>
+									<th>Opciones</th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php $sistem = new Sistem('events');
+								if (!$sistem->get(array('id', '>', 0))) : ?>
+									<tr>
+										<td colspan="8"><h3><center>No hay registro</center></h3></td>
+									</tr>
+								<?php else :
+									foreach ($sistem->data() as $event) { ?>
+										<tr>
+											<td><?php echo $event->name; ?></td>
+											<td><?php echo $event->startDate; ?></td>
+											<td><?php echo $event->dueDate; ?></td>
+											<td><?php echo $event->place; ?></td>
+											<td><?php echo getData($event->id_group, 'groups_2', 'name'); ?></td>
+											<td><?php echo getData($event->id_voluntary, 'volunteers', 'firstName'); ?> <?php echo getData($event->id_voluntary, 'volunteers', 'lastName'); ?></td>
+											<td><?php echo getData($event->id_team, 'teams', 'name'); ?></td>
+											<td><a href="?edit=<?php echo $event->id; ?>">editar</a><td>
+										</tr>
+									<?php } ?>
+								<?php endif; ?>
+							</tbody>
+						</table>
 					</div>
 				<?php endif ?>
 			</div>
