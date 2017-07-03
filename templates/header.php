@@ -23,6 +23,7 @@
 						<li><a href="voluntarios.php">Voluntarios</a></li>
 						<li><a href="vehiculos.php">Vehiculos</a></li>
 						<li><a href="equipos.php">Equipos</a></li>
+						<li><a href="usuarios.php">Usuarios</a></li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<?php if (!$user->isLoggedIn()) { ?>

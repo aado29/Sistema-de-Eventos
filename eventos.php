@@ -202,7 +202,9 @@
 								<input type="submit" name="edit" class="btn btn-primary" value="Editar"/>
 							</form>
 						<?php else :
-							echo ':('; 
+							if (!empty($error)) {
+								handlerMessage($error, 'danger');
+							} 
 						endif;?>
 					</div>
 				<?php else : ?>

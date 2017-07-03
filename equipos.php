@@ -128,7 +128,9 @@
 								<input type="submit" name="edit" class="btn btn-primary" value="Editar"/>
 							</form>
 						<?php else :
-							echo ':('; 
+							if (!empty($error)) {
+								handlerMessage($error, 'danger');
+							} 
 						endif;?>
 					</div>
 				<?php else : ?>
@@ -139,7 +141,7 @@
 						<?php if (Session::exists('teams')) {
 							handlerMessage(Session::flash('teams'), 'success');
 						} ?>			
-						<h2>Equipos <a href="?show=true" class="btn btn-primary">Ver Eventos</a></h2>
+						<h2>Equipos <a href="?show=true" class="btn btn-primary">Ver Equipos</a></h2>
 						<form action="" method="post">
 							<div class="form-group">
 								<label for="name">Name:</label>

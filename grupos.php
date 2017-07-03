@@ -175,7 +175,7 @@
 								</div>
 								<div class="form-group">
 									<label for="phone">Telefono:</label>
-									<input name="phone" type="number" class="form-control" id="phone" value="<?php echo $group->phone; ?>">
+									<input name="phone" type="tel" class="form-control" id="phone" value="<?php echo $group->phone; ?>">
 								</div>
 								<div class="form-group">
 									<label for="address">Dirección:</label>
@@ -198,7 +198,9 @@
 								<input type="submit" name="edit" class="btn btn-primary" value="Editar"/>
 							</form>
 						<?php else :
-							echo ':('; 
+							if (!empty($error)) {
+								handlerMessage($error, 'danger');
+							} 
 						endif;?>
 					</div>
 				<?php else : ?>
@@ -209,7 +211,7 @@
 						<?php if (Session::exists('groups')) {
 							handlerMessage(Session::flash('groups'), 'success');
 						} ?>
-						<h2>Grupo de Rescate <a href="?show=true" class="btn btn-primary">Ver Eventos</a></h2>
+						<h2>Grupo de Rescate <a href="?show=true" class="btn btn-primary">Ver Grupos</a></h2>
 						<form action="" method="post">
 							<div class="form-group">
 								<label for="name">Nombre:</label>
@@ -225,7 +227,7 @@
 							</div>
 							<div class="form-group">
 								<label for="phone">Telefono:</label>
-								<input name="phone" type="number" class="form-control" id="phone">
+								<input name="phone" type="tel" class="form-control" id="phone">
 							</div>
 							<div class="form-group">
 								<label for="address">Dirección:</label>

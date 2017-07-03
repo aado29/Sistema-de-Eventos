@@ -213,7 +213,9 @@
 								<input type="submit" name="edit" class="btn btn-primary" value="Editar"/>
 							</form>
 						<?php else :
-							echo ':('; 
+							if (!empty($error)) {
+								handlerMessage($error, 'danger');
+							} 
 						endif;?>
 					</div>
 				<?php else : ?>
@@ -224,7 +226,7 @@
 						<?php if (Session::exists('vehicles')) {
 							handlerMessage(Session::flash('vehicles'), 'success');
 						} ?>
-						<h2>Vehículos <a href="?show=true" class="btn btn-primary">Ver Eventos</a></h2>
+						<h2>Vehículos <a href="?show=true" class="btn btn-primary">Ver Vehículos</a></h2>
 						<form action="" method="post">
 							<div class="form-group">
 								<label for="plate">Placa:</label>

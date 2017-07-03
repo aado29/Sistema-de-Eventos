@@ -22,24 +22,35 @@ class Sistem {
 
     public function update($fields = array(), $id = null){     
         if(!$this->_db->update($this->_type, $id, $fields)){
-            throw new Exception("There was a problem updating in {$rule_value}.");
+           throw new Exception("There was a problem updating in {$this->_type}.");
         }
     }
 
     public function create($fields = array()) {
         if (!$this->_db->insert($this->_type, $fields)) {
-            throw new Exception("There was a problem creating in {$rule_value}.");
+            throw new Exception("There was a problem creating in {$this->_type}.");
         }
     }
 
     public function delete($id = null) {
         if (!is_null($id)) {
             if (!$this->_db->insert($this->_type, $fields)) {
-                throw new Exception("There was a problem creating in {$rule_value}.");
+                throw new Exception("There was a problem creating in {$this->_type}.");
             }
         } else {
             return false;
         }
+    }
+
+    public function getById($id = null) {
+        if (!is_null($id)) {
+            $data = $this->_db->get($this->_type, array('id', '=', $id));
+            if ($data->count())
+                return $data->first();
+            else
+                return false;
+        }
+        return false;
     }
 
     public function get($arg = null) {

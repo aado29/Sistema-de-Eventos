@@ -265,7 +265,7 @@
 								</div>
 								<div class="form-group">
 									<label for="phone">Telefono:</label>
-									<input name="phone" type="number" class="form-control" id="phone" value="<?php echo $voluntary->phone; ?>">
+									<input name="phone" type="tel" class="form-control" id="phone" value="<?php echo $voluntary->phone; ?>">
 								</div>
 								<div class="form-group">
 									<label for="email">Correo electónico:</label>
@@ -356,7 +356,9 @@
 								<input type="submit" name="edit" class="btn btn-primary" value="Editar"/>
 							</form>
 						<?php else :
-							echo ':('; 
+							if (!empty($error)) {
+								handlerMessage($error, 'danger');
+							} 
 						endif;?>
 					</div>
 				<?php else : ?>
@@ -367,7 +369,7 @@
 						<?php if (Session::exists('volunteers')) {
 							handlerMessage(Session::flash('volunteers'), 'success');
 						} ?>
-						<h2>Voluntarios <a href="?show=true" class="btn btn-primary">Ver Eventos</a></h2>
+						<h2>Voluntarios <a href="?show=true" class="btn btn-primary">Ver Voluntarios</a></h2>
 						<form action="" method="post">
 							<div class="form-group">
 								<label for="ci">Cedula:</label>
@@ -387,7 +389,7 @@
 							</div>
 							<div class="form-group">
 								<label for="phone">Telefono:</label>
-								<input name="phone" type="number" class="form-control" id="phone">
+								<input name="phone" type="tel" class="form-control" id="phone">
 							</div>
 							<div class="form-group">
 								<label for="email">Correo electónico:</label>
