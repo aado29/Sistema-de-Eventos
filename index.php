@@ -6,5 +6,7 @@ if(!$user->isLoggedIn()) {
 	Redirect::to('login.php');
 }
 gettemplate('header');
-
+if (Session::exists('home')) {
+	handlerMessage(Session::flash('home'), 'success');
+}
 gettemplate('footer');

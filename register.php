@@ -79,10 +79,10 @@ gettemplate('header');
 	<div class="row">
 		<div class="jumbotron">
 			<div class="row">
-				<?php if (!empty($error)) {
-					handlerMessage($error, 'danger');
-				} ?>
 				<div class="col-sm-offset-3 col-sm-6">
+					<?php if (!empty($error)) {
+						handlerMessage($error, 'danger');
+					} ?>
 					<h2>Registro de usuario</h2>
 					<form action="" method="post">
 						<div class="form-group">

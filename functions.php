@@ -31,3 +31,13 @@
 		echo $output;
 	}
 
+	function getData($id = null, $table = null, $field = 'id') {
+		if (!is_null($id)) {
+			$sistem = new Sistem($table);
+			if ($sistem->get(array('id', '=', $id))) {
+				$result = $sistem->data()[0];
+				return $result->$field;
+			}
+		}
+		return 'No existente';
+	}

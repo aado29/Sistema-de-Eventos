@@ -8,7 +8,7 @@
 class Sistem {
 
     private $_db,
-            $_data
+            $_data,
             $_type;
 
     public function __construct($type = null) {
@@ -27,12 +27,8 @@ class Sistem {
     }
 
     public function create($fields = array()) {
-        if (!is_null($table)) { 
-            if (!$this->_db->insert($this->_type, $fields)) {
-                throw new Exception("There was a problem creating in {$rule_value}.");
-            }
-        } else {
-            return false;
+        if (!$this->_db->insert($this->_type, $fields)) {
+            throw new Exception("There was a problem creating in {$rule_value}.");
         }
     }
 
@@ -46,11 +42,11 @@ class Sistem {
         }
     }
 
-    public function get($arg = null {
+    public function get($arg = null) {
         if (!is_null($arg)) {
             $data = $this->_db->get($this->_type, $arg);
             if ($data->count()) {
-                $this->_data = $data->first();
+                $this->_data = $data->results();
                 return true;
             }
         } else {
