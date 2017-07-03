@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Jul 03, 2017 at 09:38 AM
+-- Generation Time: Jul 03, 2017 at 10:46 PM
 -- Server version: 5.6.35
--- PHP Version: 7.0.15
+-- PHP Version: 7.1.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -55,8 +55,8 @@ CREATE TABLE `groups` (
 --
 
 INSERT INTO `groups` (`id`, `name`, `permissions`) VALUES
-(1, 'Standard User', ''),
-(2, 'Administrator', '{\"admin\":1,\"moderator\":1}');
+(1, 'Usuario estándar', ''),
+(2, 'Administrador', '{\"admin\":1,\"moderator\":1}');
 
 -- --------------------------------------------------------
 
@@ -113,11 +113,13 @@ INSERT INTO `teams` (`id`, `name`, `description`, `state`) VALUES
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
+  `ci` int(11) NOT NULL,
   `username` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `salt` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `firstName` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   `lastName` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `phone` int(11) NOT NULL,
   `email` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `joined` datetime NOT NULL,
   `group` int(11) NOT NULL
@@ -127,9 +129,10 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `salt`, `firstName`, `lastName`, `email`, `joined`, `group`) VALUES
-(1, 'aado29', 'c9ed5c749ebc269bf230aebc23ec7c5b79af8271842e53eea6d8ba587e6de978', '', 'Alberto', 'Diaz', 'aado29@gmail.com', '2017-07-01 00:30:59', 1),
-(2, 'aado', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', '', 'alber', 'diaz', 'aa@hma.com', '2017-07-01 00:33:34', 1);
+INSERT INTO `users` (`id`, `ci`, `username`, `password`, `salt`, `firstName`, `lastName`, `phone`, `email`, `joined`, `group`) VALUES
+(1, 21367773, 'aado29', 'c9ed5c749ebc269bf230aebc23ec7c5b79af8271842e53eea6d8ba587e6de978', '', 'Alberto', 'Diaz', 2147483647, 'aado29@gmail.com', '2017-07-01 00:30:59', 1),
+(2, 21367773, 'aado_', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', '', 'alber', 'diaz', 2147483647, 'aa@hma.com', '2017-07-01 00:33:34', 2),
+(3, 21367773, 'Alberto', 'c9ed5c749ebc269bf230aebc23ec7c5b79af8271842e53eea6d8ba587e6de978', '', 'Alberto', 'Diaz', 2147483647, 'aado29@hshsk.com', '2017-07-03 22:02:00', 2);
 
 -- --------------------------------------------------------
 
@@ -290,7 +293,7 @@ ALTER TABLE `teams`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `users_session`
 --
