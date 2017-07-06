@@ -116,6 +116,9 @@
 			<div class="row">
 				<?php if (Input::exists('get') && Input::get('new')) : ?>
 					<div class="col-sm-offset-3 col-sm-6">
+						<?php if (!empty($error)) {
+							handlerMessage($error, 'danger');
+						} ?>
 						<h2>Grupo de Rescate <a href="?" class="btn btn-primary">Ver Grupos</a></h2>
 						<form action="" method="post">
 							<div class="form-group">
@@ -206,9 +209,6 @@
 					</div>
 				<?php else : ?>
 					<div class="col-sm-12">
-						<?php if (!empty($error)) {
-							handlerMessage($error, 'danger');
-						} ?>
 						<?php if (Session::exists('groups')) {
 							handlerMessage(Session::flash('groups'), 'success');
 						} ?>

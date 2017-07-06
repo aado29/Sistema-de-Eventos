@@ -47,7 +47,7 @@
 				
 				try{
 
-					if (Input::get('create') === 'Registrar') {
+					if (Input::get('create')) {
 						$sistem->create(array(
 							'name' => escape(Input::get('name')),
 							'startDate' => escape(Input::get('startDate')),
@@ -61,7 +61,7 @@
 						Session::flash('events', 'El evento ha sido registrado con exito!');
 					}
 
-					if (Input::get('edit') === 'Editar') {
+					if (Input::get('edit')) {
 						$sistem->update(array(
 							'id' => escape(Input::get('id')),
 							'name' => escape(Input::get('name')),
@@ -96,6 +96,9 @@
 			<div class="row">
 				<?php if (Input::exists('get') && Input::get('new')) : ?>
 					<div class="col-sm-offset-3 col-sm-6">
+						<?php if (!empty($error)) {
+							handlerMessage($error, 'danger');
+						} ?>
 						<h2>Gestionar Eventos <a href="?" class="btn btn-primary">Ver Eventos</a></h2>
 						<form action="" method="post">
 							<div class="form-group">
@@ -235,9 +238,6 @@
 					</div>
 				<?php else : ?>
 					<div class="col-sm-12">
-						<?php if (!empty($error)) {
-							handlerMessage($error, 'danger');
-						} ?>
 						<?php if (Session::exists('events')) {
 							handlerMessage(Session::flash('events'), 'success');
 						} ?>
