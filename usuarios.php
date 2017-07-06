@@ -223,6 +223,9 @@
 					</div>
 				<?php elseif (Input::exists('get') && Input::get('edit')) : ?>
 					<div class="col-sm-offset-3 col-sm-6">
+						<?php if (!empty($error)) {
+							handlerMessage($error, 'danger');
+						} ?>
 						<?php $sistem = new Sistem('users');
 						if ($sistem->get(array('id', '=', Input::get('edit')))) : 
 							$user = $sistem->data()[0]; ?>

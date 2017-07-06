@@ -159,6 +159,9 @@
 					</div>
 				<?php elseif (Input::exists('get') && Input::get('edit')) : ?>
 					<div class="col-sm-offset-3 col-sm-6">
+						<?php if (!empty($error)) {
+							handlerMessage($error, 'danger');
+						} ?>
 						<?php $sistem = new Sistem('groups_2');
 						if ($sistem->get(array('id', '=', Input::get('edit')))) : 
 							$group = $sistem->data()[0]; ?>

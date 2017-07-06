@@ -172,6 +172,9 @@
 					</div>
 				<?php elseif (Input::exists('get') && Input::get('edit')) : ?>
 					<div class="col-sm-offset-3 col-sm-6">
+						<?php if (!empty($error)) {
+							handlerMessage($error, 'danger');
+						} ?>
 						<?php $sistem = new Sistem('vehicles');
 						if ($sistem->get(array('id', '=', Input::get('edit')))) : 
 							$vehicles = $sistem->data()[0]; ?>
