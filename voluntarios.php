@@ -9,6 +9,18 @@
 	if (Input::exists()) {
 
 		if (Token::check(Input::get('token'))) {
+
+			if (Input::get('delete') === 'Eliminar') {
+				try {
+					$sistem = new Sistem('volunteers');
+					$sistem->delete(escape(Input::get('id')));
+				
+					Session::flash('volunteers', 'El voluntario ha sido eliminado con exito!');
+					Redirect::to('voluntarios.php');
+				} catch (Exception $e) {
+					$error = $e->getMessage();
+				}
+			}
 			
 			$validate = new Validate();
 			$validation = $validate->check($_POST, array(
@@ -450,7 +462,7 @@
 								<?php $sistem = new Sistem('volunteers');
 								if (!$sistem->get(array('id', '>', 0))) : ?>
 									<tr>
-										<td colspan="8"><h3><center>No hay registro</center></h3></td>
+										<td colspan="18"><h3><center>No hay registro</center></h3></td>
 									</tr>
 								<?php else :
 									foreach ($sistem->data() as $voluntary) { ?>

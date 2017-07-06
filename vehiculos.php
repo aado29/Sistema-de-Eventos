@@ -9,6 +9,18 @@
 	if (Input::exists()) {
 
 		if (Token::check(Input::get('token'))) {
+
+			if (Input::get('delete') === 'Eliminar') {
+				try {
+					$sistem = new Sistem('vehicles');
+					$sistem->delete(escape(Input::get('id')));
+				
+					Session::flash('vehicles', 'El Vehículo ha sido eliminado con exito!');
+					Redirect::to('vehiculos.php');
+				} catch (Exception $e) {
+					$error = $e->getMessage();
+				}
+			}
 			
 			$validate = new Validate();
 			$validation = $validate->check($_POST, array(
@@ -252,7 +264,7 @@
 								<?php $sistem = new Sistem('vehicles');
 								if (!$sistem->get(array('id', '>', 0))) : ?>
 									<tr>
-										<td colspan="8"><h3><center>No hay registro</center></h3></td>
+										<td colspan="10"><h3><center>No hay registro</center></h3></td>
 									</tr>
 								<?php else :
 									foreach ($sistem->data() as $vehicle) { ?>

@@ -9,6 +9,18 @@
 	if (Input::exists()) {
 
 		if (Token::check(Input::get('token'))) {
+
+			if (Input::get('delete') === 'Eliminar') {
+				try {
+					$sistem = new Sistem('events');
+					$sistem->delete(escape(Input::get('id')));
+				
+					Session::flash('events', 'El evento ha sido eliminado con exito!');
+					Redirect::to('eventos.php');
+				} catch (Exception $e) {
+					$error = $e->getMessage();
+				}
+			}
 			
 			$validate = new Validate();
 			$validation = $validate->check($_POST, array(

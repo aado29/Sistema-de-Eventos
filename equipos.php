@@ -9,6 +9,18 @@
 	if (Input::exists()) {
 
 		if (Token::check(Input::get('token'))) {
+
+			if (Input::get('delete') === 'Eliminar') {
+				try {
+					$sistem = new Sistem('teams');
+					$sistem->delete(escape(Input::get('id')));
+				
+					Session::flash('teams', 'El equipo ha sido eliminado con exito!');
+					Redirect::to('equipos.php');
+				} catch (Exception $e) {
+					$error = $e->getMessage();
+				}
+			}
 			
 			$validate = new Validate();
 			$validation = $validate->check($_POST, array(
@@ -149,7 +161,7 @@
 								<?php $sistem = new Sistem('teams');
 								if (!$sistem->get(array('id', '>', 0))) : ?>
 									<tr>
-										<td colspan="8"><h3><center>No hay registro</center></h3></td>
+										<td colspan="4"><h3><center>No hay registro</center></h3></td>
 									</tr>
 								<?php else :
 									foreach ($sistem->data() as $team) { ?>

@@ -34,8 +34,8 @@ class Sistem {
 
     public function delete($id = null) {
         if (!is_null($id)) {
-            if (!$this->_db->insert($this->_type, $fields)) {
-                throw new Exception("There was a problem creating in {$this->_type}.");
+            if (!$this->_db->delete($this->_type, array('id', '=', $id))) {
+                throw new Exception("There was a problem deleting in {$this->_type}.");
             }
         } else {
             return false;

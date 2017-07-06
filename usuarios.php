@@ -9,6 +9,18 @@
 	if (Input::exists()) {
 
 		if (Token::check(Input::get('token'))) {
+
+			if (Input::get('delete') === 'Eliminar') {
+				try {
+					$sistem = new Sistem('users');
+					$sistem->delete(escape(Input::get('id')));
+				
+					Session::flash('users', 'El usuario ha sido eliminado con exito!');
+					Redirect::to('usuarios.php');
+				} catch (Exception $e) {
+					$error = $e->getMessage();
+				}
+			}
 			
 			$validate = new Validate();
 			if (Input::get('create') === 'Registrar') {
@@ -302,7 +314,7 @@
 								<?php $sistem = new Sistem('users');
 								if (!$sistem->get(array('id', '>', 0))) : ?>
 									<tr>
-										<td colspan="8"><h3><center>No hay registro</center></h3></td>
+										<td colspan="7"><h3><center>No hay registro</center></h3></td>
 									</tr>
 								<?php else :
 									foreach ($sistem->data() as $user) { ?>

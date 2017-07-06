@@ -9,6 +9,18 @@
 	if (Input::exists()) {
 
 		if (Token::check(Input::get('token'))) {
+
+			if (Input::get('delete') === 'Eliminar') {
+				try {
+					$sistem = new Sistem('groups_2');
+					$sistem->delete(escape(Input::get('id')));
+				
+					Session::flash('groups', 'El grupo ha sido eliminado con exito!');
+					Redirect::to('grupos.php');
+				} catch (Exception $e) {
+					$error = $e->getMessage();
+				}
+			}
 			
 			$validate = new Validate();
 			$validation = $validate->check($_POST, array(
@@ -234,7 +246,7 @@
 								<?php $sistem = new Sistem('groups_2');
 								if (!$sistem->get(array('id', '>', 0))) : ?>
 									<tr>
-										<td colspan="8"><h3><center>No hay registro</center></h3></td>
+										<td colspan="9"><h3><center>No hay registro</center></h3></td>
 									</tr>
 								<?php else :
 									foreach ($sistem->data() as $group) { ?>
