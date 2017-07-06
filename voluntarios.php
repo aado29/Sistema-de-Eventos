@@ -10,7 +10,7 @@
 
 		if (Token::check(Input::get('token'))) {
 
-			if (Input::get('delete') === 'Eliminar') {
+			if (Input::get('delete')) {
 				try {
 					$sistem = new Sistem('volunteers');
 					$sistem->delete(escape(Input::get('id')));
@@ -127,7 +127,7 @@
 				$sistem = new Sistem('volunteers');
 				
 				try{
-					if (escape(Input::get('create')) === 'Registrar') {
+					if (Input::get('create')) {
 						$sistem->create(array(
 							'ci' => escape(Input::get('ci')),
 							'firstName' => escape(Input::get('firstName')),
@@ -151,7 +151,7 @@
 						Session::flash('volunteers', 'El voluntario ha sido registrado con exito!');
 					}
 
-					if (escape(Input::get('edit')) === 'Editar') {
+					if (Input::get('edit')) {
 						$sistem->update(array(
 							'id' => escape(Input::get('id')),
 							'ci' => escape(Input::get('ci')),

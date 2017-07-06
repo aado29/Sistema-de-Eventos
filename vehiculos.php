@@ -10,7 +10,7 @@
 
 		if (Token::check(Input::get('token'))) {
 
-			if (Input::get('delete') === 'Eliminar') {
+			if (Input::get('delete')) {
 				try {
 					$sistem = new Sistem('vehicles');
 					$sistem->delete(escape(Input::get('id')));
@@ -84,7 +84,7 @@
 				$sistem = new Sistem('vehicles');
 				
 				try{
-					if (Input::get('create') === 'Registrar') {
+					if (Input::get('create')) {
 						$sistem->create(array(
 							'plate' => escape(Input::get('plate')),
 							'brand' => escape(Input::get('brand')),
@@ -100,7 +100,7 @@
 						Session::flash('vehicles', 'El Vehículo ha sido registrado con exito!');
 					}
 
-					if (Input::get('edit') === 'Editar') {
+					if (Input::get('edit')) {
 						$sistem->update(array(
 							'id' => escape(Input::get('id')),
 							'plate' => escape(Input::get('plate')),

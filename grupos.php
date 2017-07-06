@@ -10,7 +10,7 @@
 
 		if (Token::check(Input::get('token'))) {
 
-			if (Input::get('delete') === 'Eliminar') {
+			if (Input::get('delete')) {
 				try {
 					$sistem = new Sistem('groups_2');
 					$sistem->delete(escape(Input::get('id')));
@@ -77,7 +77,7 @@
 				$sistem = new Sistem('groups_2');
 				
 				try{
-					if (escape(Input::get('create')) === 'Registrar') {
+					if (Input::get('create')) {
 						$sistem->create(array(
 							'name' => escape(Input::get('name')),
 							'type' => escape(Input::get('type')),
@@ -92,7 +92,7 @@
 						Session::flash('groups', 'El grupo ha sido registrado con exito!');
 					}
 
-					if (escape(Input::get('edit')) === 'Editar') {
+					if (Input::get('edit')) {
 						$sistem->update(array(
 							'id' => escape(Input::get('id')),
 							'name' => escape(Input::get('name')),

@@ -10,7 +10,7 @@
 
 		if (Token::check(Input::get('token'))) {
 
-			if (Input::get('delete') === 'Eliminar') {
+			if (Input::get('delete')) {
 				try {
 					$sistem = new Sistem('events');
 					$sistem->delete(escape(Input::get('id')));

@@ -10,7 +10,7 @@
 
 		if (Token::check(Input::get('token'))) {
 
-			if (Input::get('delete') === 'Eliminar') {
+			if (Input::get('delete')) {
 				try {
 					$sistem = new Sistem('teams');
 					$sistem->delete(escape(Input::get('id')));
@@ -48,7 +48,7 @@
 				$sistem = new Sistem('teams');
 				
 				try{
-					if (Input::get('create') === 'Registrar') {
+					if (Input::get('create')) {
 						$sistem->create(array(
 							'name' => escape(Input::get('name')),
 							'description' => escape(Input::get('description')),
@@ -58,7 +58,7 @@
 						Session::flash('teams', 'El equipo ha sido registrado con exito!');
 					}
 
-					if (Input::get('edit') === 'Editar') {
+					if (Input::get('edit')) {
 						$sistem->update(array(
 							'id' => escape(Input::get('id')),
 							'name' => escape(Input::get('name')),

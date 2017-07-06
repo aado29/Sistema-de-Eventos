@@ -10,7 +10,7 @@
 
 		if (Token::check(Input::get('token'))) {
 
-			if (Input::get('delete') === 'Eliminar') {
+			if (Input::get('delete')) {
 				try {
 					$sistem = new Sistem('users');
 					$sistem->delete(escape(Input::get('id')));
@@ -23,11 +23,12 @@
 			}
 			
 			$validate = new Validate();
-			if (Input::get('create') === 'Registrar') {
+			if (Input::get('create')) {
 				$validation = $validate->check($_POST, array(
 					'ci' => array(
 						'required' => TRUE,
-						'max' => 11,
+						'min' => 7,
+						'max' => 8,
 						'unique' => 'users',
 						'display' => 'Cedula'
 					),
@@ -79,11 +80,12 @@
 					)
 				));
 			}
-			if (Input::get('edit') === 'Editar') {
+			if (Input::get('edit')) {
 				$validation = $validate->check($_POST, array(
 					'ci' => array(
 						'required' => TRUE,
-						'max' => 11,
+						'min' => 7,
+						'max' => 8,
 						'display' => 'Cedula'
 					),
 					'username' => array(
@@ -129,7 +131,7 @@
 				$salt = escape(Hash::salt(32));
 				
 				try{
-					if (Input::get('create') === 'Registrar') {
+					if (Input::get('create')) {
 						$user->create(array(
 							'ci' => escape(Input::get('ci')),
 							'username' => escape(Input::get('username')),
@@ -146,7 +148,7 @@
 						Session::flash('users', 'El usuario ha sido registrado con exito!');
 					}
 
-					if (Input::get('edit') === 'Editar') {
+					if (Input::get('edit')) {
 						$user->update(array(
 							'ci' => escape(Input::get('ci')),
 							'username' => escape(Input::get('username')),
