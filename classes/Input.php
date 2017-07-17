@@ -29,4 +29,11 @@ class Input {
         }
         return '';
     }
+
+    public static function file($item) {
+        if(isset ($_FILES[$item])){
+            return $_FILES[$item];
+        }
+        return array();
+    }
 }

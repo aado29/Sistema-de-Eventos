@@ -52,6 +52,10 @@ class Validate {
 								$this->addError("{$displayName} ya existe.");
 							}
 							break;
+						case 'date_limit':
+							if(strtotime($value) > strtotime($rule_value))
+								$this->addError("Hay un error en {$displayName}.");
+							break;
 					}
 				}
 			}

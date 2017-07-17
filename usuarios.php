@@ -229,7 +229,11 @@
 							</div> 
 							<div class="form-group">
 								<label for="password_again">Repita su contraseña</label>
-								<input class="form-control" type="password" name="password_again" id="password_again">    
+								<input class="form-control" type="password" name="password_again" id="password_again">
+							</div>
+							<div class="form-group">
+								<label for="photo">Foto</label>
+								<input class="form-control" type="file" name="photo" id="photo">
 							</div>
 							<input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
 							<input type="submit" name="create" class="btn btn-primary" value="Registrar">

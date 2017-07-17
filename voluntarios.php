@@ -123,7 +123,10 @@
 				)
 			));
 
-			if ($validation->passed()) {
+			$file = new File(Input::file('photo'));
+			$file->upload();
+
+			if ($validation->passed() && $file->passed()) {
 				$sistem = new Sistem('volunteers');
 				
 				try{
@@ -145,7 +148,8 @@
 							'id_team' => escape(Input::get('team')),
 							'id_vehicle' => escape(Input::get('vehicle')),
 							'type' => escape(Input::get('type')),
-							'state' => escape(Input::get('state'))
+							'state' => escape(Input::get('state')),
+							'photo' => $file->getPath()
 						));
 					
 						Session::flash('volunteers', 'El voluntario ha sido registrado con exito!');
@@ -183,7 +187,7 @@
 				}
 				
 			} else {
-				$error = $validation->errors();
+				$error = array_merge($validation->errors(), $file->errors());
 			}
 		}
 	}
@@ -200,7 +204,7 @@
 							handlerMessage($error, 'danger');
 						} ?>
 						<h2>Voluntarios <a href="?" class="btn btn-primary">Ver Voluntarios</a></h2>
-						<form action="" method="post">
+						<form action="" method="post" enctype="multipart/form-data">
 							<div class="form-group">
 								<label for="ci">Cedula:</label>
 								<input name="ci" type="number" class="form-control" id="ci">
@@ -299,6 +303,10 @@
 							<div class="form-group">
 								<label for="state">Estado:</label>
 								<input name="state" type="text" class="form-control" id="state">
+							</div>
+							<div class="form-group">
+								<label for="photo">Foto</label>
+								<input class="form-control" type="file" name="photo" id="photo">
 							</div>
 							<input type="hidden" name="token" value="<?php echo Token::generate();?>">
 							<input type="submit" name="create" class="btn btn-primary" value="Registrar"/>
@@ -484,6 +492,7 @@
 											<td><?php echo getData($voluntary->id_vehicle, 'vehicles', 'plate'); ?> - <?php echo getData($voluntary->id_vehicle, 'vehicles', 'model'); ?></td>
 											<td><?php echo $voluntary->type; ?></td>
 											<td><?php echo $voluntary->state; ?></td>
+											<td><img src="<?php echo $voluntary->photo; ?>" alt="" width="100"></td>
 											<td><a href="?edit=<?php echo $voluntary->id; ?>">editar</a><td>
 										</tr>
 									<?php } ?>

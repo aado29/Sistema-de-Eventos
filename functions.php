@@ -41,3 +41,16 @@
 		}
 		return 'No existente';
 	}
+
+	function getReportByDate($date = null) {
+		if (is_null($date))
+			$date = date('Y-m-d');
+		$sistem = new Sistem('events');
+		return $sistem->getByDate($date);
+	}
+	function getReportByRangeDate($date = null, $date_ = null) {
+		if (is_null($date) || is_null($date_))
+			return array();
+		$sistem = new Sistem('events');
+		return $sistem->getBetweenDates($date, $date_);
+	}
