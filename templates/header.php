@@ -6,6 +6,7 @@
 	<meta charset="UTF-8">
 	<title><?php echo Config::get('template/name'); ?></title>
 	<link rel="stylesheet" type="text/css" href="assets/lib/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/lib/bootstrap/dist/css/bootstrap.min.css" media="print">
 	<link rel="stylesheet" type="text/css" href="assets/css/main.css">
 	<style media="print">
 		.noPrint { display: none; }
@@ -24,7 +25,7 @@
 					Y ADMINISTRACION DE DESASTRES</p>
 				</center>
 			</div>
-			<div class="col-sm-3"><img src="assets/images/logo_az.jpeg" class="img-responsive" alt=""></div>
+			<div class="col-sm-3"><img src="assets/images/logo_az.jpeg" class="pull-right img-responsive" alt=""></div>
 		</div>
 		<div class="row">
 			<nav class="navbar navbar-inverse">
@@ -33,13 +34,15 @@
 						<a class="navbar-brand" href="./index.php"><?php echo Config::get('template/name'); ?></a>
 					</div> -->
 					<ul class="nav navbar-nav">
-						<li><a href="eventos.php">Gestión de Eventos</a></li>
-						<li><a href="grupos.php">Grupos de Rescate</a></li>
+						<li><a href="eventos.php">Eventos</a></li>
+						<li><a href="grupos.php">Grupos Voluntarios</a></li>
 						<li><a href="voluntarios.php">Voluntarios</a></li>
 						<li><a href="vehiculos.php">Vehiculos</a></li>
 						<li><a href="equipos.php">Equipos</a></li>
-						<li><a href="usuarios.php">Usuarios</a></li>
-						<li><a href="reportes.php">Reportes</a></li>
+						<?php if($user->hasPermission('admin')) { ?>
+							<li><a href="reportes.php">Reportes</a></li>
+							<li><a href="usuarios.php">Usuarios</a></li>
+						<?php } ?>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<?php if (!$user->isLoggedIn()) { ?>

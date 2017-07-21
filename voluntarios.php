@@ -3,12 +3,24 @@
 	$user = new User();
 
 	if(!$user->isLoggedIn()){
-		Redirect::to('index.php');
+		Redirect::to('login.php');
 	}
 
 	if (Input::exists()) {
 
 		if (Token::check(Input::get('token'))) {
+
+			if (Input::get('search')) {
+				$db = DB::getInstance();
+				$type = Input::get('type');
+				$field = (Input::get('field')) ? "LIKE '%".Input::get('field')."%'": '';
+				$sql = "SELECT * FROM volunteers WHERE {$type} {$field}";
+				$check = $db->query($sql);
+
+				if($check->count()){
+					$searchResults = $check->results();
+				}
+			}
 
 			if (Input::get('delete')) {
 				try {
@@ -27,155 +39,129 @@
 				'ci' => array(
 					'required' => true,
 					'min' => 7,
-					'max' => 8,
+					'max' => 9,
 					'display' => 'Cedula de indentidad'
 				),
 				'firstName' => array(
 					'required' => true,
 					'min' => 2,
 					'max' => 20,
-					'display' => 'Nombre'
+					'display' => 'Nombres'
 				),
 				'lastName' => array(
 					'required' => true,
 					'min' => 2,
 					'max' => 20,
-					'display' => 'Apellido'
+					'display' => 'Apellidos'
 				),
 				'address' => array(
 					'required' => true,
-					'min' => 2,
+					'min' => 5,
 					'max' => 100,
 					'display' => 'Dirección'
 				),
 				'phone' => array(
 					'required' => true,
-					'min' => 2,
+					'min' => 11,
 					'max' => 11,
 					'display' => 'Telefono'
 				),
 				'email' => array(
 					'required' => true,
-					'min' => 2,
+					'min' => 5,
 					'max' => 50,
 					'display' => 'Correo electónico'
 				),
-				'sizeShirt' => array(
-					'required' => true,
-					'max' => 2,
-					'display' => 'Talla de franela'
-				),
-				'sizePants' => array(
-					'required' => true,
-					'max' => 2,
-					'display' => 'Talla de pantalones'
-				),
-				'sizeShoes' => array(
-					'required' => true,
-					'max' => 2,
-					'display' => 'Talla de zapatos'
-				),
-				'position' => array(
-					'required' => true,
-					'min' => 2,
-					'max' => 20,
-					'display' => 'Cargo'
-				),
 				'profession' => array(
-					'required' => true,
-					'min' => 2,
+					'min' => 5,
 					'max' => 20,
-					'display' => 'Profeción'
-				),
-				'speciality' => array(
-					'required' => true,
-					'min' => 2,
-					'max' => 20,
-					'display' => 'Especialidad'
+					'display' => 'Profesión'
 				),
 				'employment' => array(
-					'required' => true,
 					'min' => 2,
 					'max' => 20,
 					'display' => 'Ocupación'
 				),
-				'team' => array(
+				'group' => array(
 					'required' => true,
-					'max' => 11,
-					'display' => 'Equipo'
+					'display' => 'Grupo'
 				),
-				'vehicle' => array(
+				'position' => array(
 					'required' => true,
-					'max' => 11,
-					'display' => 'Vehículo'
+					'display' => 'Cargo'
 				),
-				'type' => array(
-					'required' => true,
-					'min' => 2,
+				'speciality' => array(
+					'min' => 5,
 					'max' => 20,
-					'display' => 'Tipo'
-				),
-				'state' => array(
-					'required' => true,
-					'min' => 2,
-					'max' => 20,
-					'display' => 'Estado'
+					'display' => 'Especialidad'
 				)
 			));
 
-			$file = new File(Input::file('photo'));
-			$file->upload();
+			// $file = new File(Input::file('photo'));
+			// $file->upload();
 
-			if ($validation->passed() && $file->passed()) {
+			//if ($validation->passed() && $file->passed()) {
+			if ($validation->passed()) {
+
 				$sistem = new Sistem('volunteers');
-				
+				$relation = new Relation('equipments');
 				try{
 					if (Input::get('create')) {
 						$sistem->create(array(
+							//'photo' => $file->getPath(),
 							'ci' => escape(Input::get('ci')),
 							'firstName' => escape(Input::get('firstName')),
 							'lastName' => escape(Input::get('lastName')),
+							'gender' => escape(Input::get('gender')),
+							'birthday' => escape(Input::get('birthday')),
 							'address' => escape(Input::get('address')),
 							'phone' => escape(Input::get('phone')),
 							'email' => escape(Input::get('email')),
+							'profession' => escape(Input::get('profession')),
+							'employment' => escape(Input::get('employment')),
 							'sizeShirt' => escape(Input::get('sizeShirt')),
 							'sizePants' => escape(Input::get('sizePants')),
 							'sizeShoes' => escape(Input::get('sizeShoes')),
+							'id_group' => escape(Input::get('group')),
 							'position' => escape(Input::get('position')),
-							'profession' => escape(Input::get('profession')),
 							'speciality' => escape(Input::get('speciality')),
-							'employment' => escape(Input::get('employment')),
-							'id_team' => escape(Input::get('team')),
-							'id_vehicle' => escape(Input::get('vehicle')),
-							'type' => escape(Input::get('type')),
-							'state' => escape(Input::get('state')),
-							'photo' => $file->getPath()
+							'state' => escape(Input::get('state'))
 						));
+						$sistem->get(array('id', '>', 0));
+						$results = $sistem->data();
+						$id = $results[count($results)-1]->id;
+
+						$relation->create(Input::get('equipment'), $id, 'voluntary');
+					
 					
 						Session::flash('volunteers', 'El voluntario ha sido registrado con exito!');
 					}
 
 					if (Input::get('edit')) {
+						$id = escape(Input::get('id'));
 						$sistem->update(array(
 							'id' => escape(Input::get('id')),
 							'ci' => escape(Input::get('ci')),
 							'firstName' => escape(Input::get('firstName')),
 							'lastName' => escape(Input::get('lastName')),
+							'gender' => escape(Input::get('gender')),
+							'birthday' => escape(Input::get('birthday')),
 							'address' => escape(Input::get('address')),
 							'phone' => escape(Input::get('phone')),
 							'email' => escape(Input::get('email')),
+							'profession' => escape(Input::get('profession')),
+							'employment' => escape(Input::get('employment')),
 							'sizeShirt' => escape(Input::get('sizeShirt')),
 							'sizePants' => escape(Input::get('sizePants')),
 							'sizeShoes' => escape(Input::get('sizeShoes')),
+							'id_group' => escape(Input::get('group')),
 							'position' => escape(Input::get('position')),
-							'profession' => escape(Input::get('profession')),
 							'speciality' => escape(Input::get('speciality')),
-							'employment' => escape(Input::get('employment')),
-							'id_team' => escape(Input::get('team')),
-							'id_vehicle' => escape(Input::get('vehicle')),
-							'type' => escape(Input::get('type')),
+							
 							'state' => escape(Input::get('state'))
-						), escape(Input::get('id')));
+						), $id);
+
+						$relation->update(Input::get('equipment'), $id, 'voluntary');
 
 						Session::flash('volunteers', 'El voluntario ha sido modificado con exito!');
 					}
@@ -187,7 +173,8 @@
 				}
 				
 			} else {
-				$error = array_merge($validation->errors(), $file->errors());
+				// $error = array_merge($validation->errors(), $file->errors());
+				$error = $validation->errors();
 			}
 		}
 	}
@@ -203,35 +190,31 @@
 						<?php if (!empty($error)) {
 							handlerMessage($error, 'danger');
 						} ?>
-						<h2>Voluntarios <a href="?" class="btn btn-primary">Ver Voluntarios</a></h2>
+						<h2>Registro de Voluntarios <a href="?" class="btn btn-primary">Ver Voluntarios</a></h2>
 						<form action="" method="post" enctype="multipart/form-data">
+							<?php // Input::build('Foto', 'photo', '', 'file'); ?>
+							<?php Input::build('Cedula', 'ci', '', 'number'); ?>
+							<?php Input::build('Nombres', 'firstName'); ?>
+							<?php Input::build('Apellidos', 'lastName'); ?>
 							<div class="form-group">
-								<label for="ci">Cedula:</label>
-								<input name="ci" type="number" class="form-control" id="ci">
+								<label for="gender">Genero:</label>
+								<select name="gender" class="form-control" id="gender">
+									<?php $genders = array('Masculino', 'Femenino', 'Otro');
+									foreach ($genders as $gender) { ?>
+										<option value="<?php echo $gender; ?>"><?php echo $gender; ?></option>
+									<?php } ?>
+								</select>
 							</div>
-							<div class="form-group">
-								<label for="firstName">Nombre:</label>
-								<input name="firstName" type="text" class="form-control" id="firstName">
-							</div>
-							<div class="form-group">
-								<label for="lastName">Apellido:</label>
-								<input name="lastName" type="text" class="form-control" id="lastName">
-							</div>
-							<div class="form-group">
-								<label for="address">Dirección:</label>
-								<input name="address" type="text" class="form-control" id="address">
-							</div>
-							<div class="form-group">
-								<label for="phone">Telefono:</label>
-								<input name="phone" type="tel" class="form-control" id="phone">
-							</div>
-							<div class="form-group">
-								<label for="email">Correo electónico:</label>
-								<input name="email" type="email" class="form-control" id="email">
-							</div>
+							<?php Input::build('Fecha de nacimiento', 'birthday', '', 'date'); ?>
+							<?php Input::build('Dirección', 'address'); ?>
+							<?php Input::build('Telefono', 'phone', '', 'tel'); ?>
+							<?php Input::build('Correo electónico', 'email', '', 'email'); ?>
+							<?php Input::build('Profesión', 'profession'); ?>
+							<?php Input::build('Ocupación', 'employment'); ?>
 							<div class="form-group">
 								<label for="sizeShirt">Talla de camisa:</label>
 								<select name="sizeShirt" class="form-control" id="sizeShirt">
+									<option value="">Seleccione talla</option>
 									<?php $sizes = array('SS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL');
 									for ($i = 0; $i < count($sizes); $i++) { ?>
 										<option value="<?php echo $sizes[$i]; ?>"><?php echo $sizes[$i]; ?></option>
@@ -241,6 +224,7 @@
 							<div class="form-group">
 								<label for="sizePants">Talla de pantalon:</label>
 								<select name="sizePants" class="form-control" id="sizePants">
+									<option value="">Seleccione talla</option>
 									<?php for ($i = 20; $i < 52; $i = $i+2) { ?>
 										<option value="<?php echo $i; ?>"><?php echo $i; ?></option>
 									<?php } ?>
@@ -249,65 +233,52 @@
 							<div class="form-group">
 								<label for="sizeShoes">Talla de zapatos:</label>
 								<select name="sizeShoes" class="form-control" id="sizeShoes">
+									<option value="">Seleccione talla</option>
 									<?php for ($i = 30; $i < 46; $i++) { ?>
 										<option value="<?php echo $i; ?>"><?php echo $i; ?></option>
 									<?php } ?>
 								</select>
 							</div>
 							<div class="form-group">
-								<label for="position">Cargo:</label>
-								<input name="position" type="text" class="form-control" id="position">
-							</div>
-							<div class="form-group">
-								<label for="profession">Profeción:</label>
-								<input name="profession" type="text" class="form-control" id="profession">
-							</div>
-							<div class="form-group">
-								<label for="speciality">Especialidad:</label>
-								<input name="speciality" type="text" class="form-control" id="speciality">
-							</div>
-							<div class="form-group">
-								<label for="employment">Ocupación:</label>
-								<input name="employment" type="text" class="form-control" id="employment">
-							</div>
-							<div class="form-group">
-								<label for="team">Equipo:</label>
-								<?php $sistem = new Sistem('teams'); ?>
-								<select name="team" class="form-control" id="team">
+								<label for="group">Grupo:</label>
+								<?php $sistem = new Sistem('groups_2'); ?>
+								<select name="group" class="form-control" id="group">
+									<option value="">Seleccione grupo</option>
 									<?php if ($sistem->get(array('id', '>', 0))) : ?>
-										<?php foreach ($sistem->data() as $team) { ?>
-											<option value="<?php echo $team->id; ?>"><?php echo $team->name; ?></option>
+										<?php foreach ($sistem->data() as $group) { ?>
+											<option value="<?php echo $group->id; ?>"><?php echo $group->name; ?></option>
+										<?php } ?>
+									<?php else : ?>
+										<option value="">No hay grupos registrados</option>
+									<?php endif; ?>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="position">Cargo:</label>
+								<select name="position" class="form-control" id="position">
+									<option value="">Seleccione cargo</option>
+									<?php $pos = array('Directivo', 'Miembro', 'Aspirante');
+									foreach ($pos as $value) { ?>
+										<option value="<?php echo $value; ?>"><?php echo $value; ?></option>
+									<?php } ?>
+								</select>
+							</div>
+							<?php Input::build('Especialidad', 'speciality'); ?>
+							
+							<div class="form-group">
+								<label for="equipment">Equipo:</label>
+								<?php $sistem = new Sistem('equipments'); ?>
+								<select name="equipment[]" multiple class="form-control" id="equipment">
+									<?php if ($sistem->get(array('id', '>', 0))) : ?>
+										<?php foreach ($sistem->data() as $equipment) {?>
+											<option value="<?php echo $equipment->id; ?>"><?php echo $equipment->name; ?> - <?php echo $equipment->type; ?></option>
 										<?php } ?>
 									<?php else : ?>
 										<option value="">No hay equipos registrados</option>
 									<?php endif; ?>
 								</select>
 							</div>
-							<div class="form-group">
-								<label for="vehicle">Vehículo:</label>
-								<?php $sistem = new Sistem('vehicles'); ?>
-								<select name="vehicle" class="form-control" id="vehicle">
-									<?php if ($sistem->get(array('id', '>', 0))) : ?>
-										<?php foreach ($sistem->data() as $vehicle) { ?>
-											<option value="<?php echo $vehicle->id; ?>"><?php echo $vehicle->model; ?> - <?php echo $vehicle->plate; ?></option>
-										<?php } ?>
-									<?php else : ?>
-										<option value="">No hay vehiculos registrados</option>
-									<?php endif; ?>
-								</select>
-							</div>
-							<div class="form-group">
-								<label for="type">Tipo:</label>
-								<input name="type" type="text" class="form-control" id="type">
-							</div>
-							<div class="form-group">
-								<label for="state">Estado:</label>
-								<input name="state" type="text" class="form-control" id="state">
-							</div>
-							<div class="form-group">
-								<label for="photo">Foto</label>
-								<input class="form-control" type="file" name="photo" id="photo">
-							</div>
+							<?php Input::buildState(); ?>
 							<input type="hidden" name="token" value="<?php echo Token::generate();?>">
 							<input type="submit" name="create" class="btn btn-primary" value="Registrar"/>
 						</form>
@@ -320,35 +291,31 @@
 						<?php $sistem = new Sistem('volunteers');
 						if ($sistem->get(array('id', '=', Input::get('edit')))) : 
 							$voluntary = $sistem->data()[0]; ?>
-							<h2>Voluntarios</h2>
+							<h2>Edicion de Voluntario</h2>
 							<form action="" method="post">
+								<?php Input::build('Cedula', 'ci', $voluntary->ci, 'number'); ?>
+								<?php Input::build('Nombres', 'firstName', $voluntary->firstName); ?>
+								<?php Input::build('Apellidos', 'lastName', $voluntary->lastName); ?>
 								<div class="form-group">
-									<label for="ci">Cedula:</label>
-									<input name="ci" type="number" class="form-control" id="ci" value="<?php echo $voluntary->ci; ?>">
+									<label for="gender">Genero:</label>
+									<select name="gender" class="form-control" id="gender">
+										<?php $genders = array('Masculino', 'Femenino', 'Otro');
+										foreach ($genders as $gender) {
+											$selected = ($voluntary->gender === $gender) ? 'selected' : '';?>
+											<option <?php echo $selected; ?> value="<?php echo $gender; ?>"><?php echo $gender; ?></option>
+										<?php } ?>
+									</select>
 								</div>
-								<div class="form-group">
-									<label for="firstName">Nombre:</label>
-									<input name="firstName" type="text" class="form-control" id="firstName" value="<?php echo $voluntary->firstName; ?>">
-								</div>
-								<div class="form-group">
-									<label for="lastName">Apellido:</label>
-									<input name="lastName" type="text" class="form-control" id="lastName" value="<?php echo $voluntary->lastName; ?>">
-								</div>
-								<div class="form-group">
-									<label for="address">Dirección:</label>
-									<input name="address" type="text" class="form-control" id="address" value="<?php echo $voluntary->address; ?>">
-								</div>
-								<div class="form-group">
-									<label for="phone">Telefono:</label>
-									<input name="phone" type="tel" class="form-control" id="phone" value="<?php echo $voluntary->phone; ?>">
-								</div>
-								<div class="form-group">
-									<label for="email">Correo electónico:</label>
-									<input name="email" type="email" class="form-control" id="email" value="<?php echo $voluntary->email; ?>">
-								</div>
+								<?php Input::build('Fecha de nacimiento', 'birthday', $voluntary->birthday, 'date'); ?>
+								<?php Input::build('Dirección', 'address', $voluntary->address); ?>
+								<?php Input::build('Telefono', 'phone', $voluntary->phone, 'tel'); ?>
+								<?php Input::build('Correo electónico', 'email', $voluntary->email, 'email'); ?>
+								<?php Input::build('Profesión', 'profession', $voluntary->profession); ?>
+								<?php Input::build('Ocupación', 'employment', $voluntary->employment); ?>
 								<div class="form-group">
 									<label for="sizeShirt">Talla de camisa:</label>
 									<select name="sizeShirt" class="form-control" id="sizeShirt">
+										<option value="">Seleccione talla</option>
 										<?php $sizes = array('SS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL');
 										for ($i = 0; $i < count($sizes); $i++) { 
 											$selected = ($voluntary->sizeShirt === $sizes[$i]) ? 'selected' : '';?>
@@ -359,6 +326,7 @@
 								<div class="form-group">
 									<label for="sizePants">Talla de pantalon:</label>
 									<select name="sizePants" class="form-control" id="sizePants">
+										<option value="">Seleccione talla</option>
 										<?php for ($i = 20; $i < 52; $i = $i+2) { 
 											$selected = ($voluntary->sizePants == $i) ? 'selected' : '';?>
 											<option <?php echo $selected; ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
@@ -368,6 +336,7 @@
 								<div class="form-group">
 									<label for="sizeShoes">Talla de zapatos:</label>
 									<select name="sizeShoes" class="form-control" id="sizeShoes">
+										<option value="">Seleccione talla</option>
 										<?php for ($i = 30; $i < 46; $i++) { 
 											$selected = ($voluntary->sizeShoes == $i) ? 'selected' : '';?>
 											<option <?php echo $selected; ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
@@ -375,57 +344,57 @@
 									</select>
 								</div>
 								<div class="form-group">
-									<label for="position">Cargo:</label>
-									<input name="position" type="text" class="form-control" id="position" value="<?php echo $voluntary->position; ?>">
-								</div>
-								<div class="form-group">
-									<label for="profession">Profeción:</label>
-									<input name="profession" type="text" class="form-control" id="profession" value="<?php echo $voluntary->profession; ?>">
-								</div>
-								<div class="form-group">
-									<label for="speciality">Especialidad:</label>
-									<input name="speciality" type="text" class="form-control" id="speciality" value="<?php echo $voluntary->speciality; ?>">
-								</div>
-								<div class="form-group">
-									<label for="employment">Ocupación:</label>
-									<input name="employment" type="text" class="form-control" id="employment" value="<?php echo $voluntary->employment; ?>">
-								</div>
-								<div class="form-group">
-									<label for="team">Equipo:</label>
-									<?php $sistem = new Sistem('teams'); ?>
-									<select name="team" class="form-control" id="team">
+									<label for="group">Grupo:</label>
+									<?php $sistem = new Sistem('groups_2'); ?>
+									<select name="group" class="form-control" id="group">
+										<option value="">Seleccione grupo</option>
 										<?php if ($sistem->get(array('id', '>', 0))) : ?>
-											<?php foreach ($sistem->data() as $team) { 
-												$selected = ($voluntary->id_team === $team->id) ? 'selected' : '';?>
-												<option <?php echo $selected; ?> value="<?php echo $team->id; ?>"><?php echo $team->name; ?></option>
+											<?php foreach ($sistem->data() as $group) { 
+												$selected = ($voluntary->id_group === $group->id) ? 'selected' : '';?>
+												<option <?php echo $selected; ?> value="<?php echo $group->id; ?>"><?php echo $group->name; ?></option>
+											<?php } ?>
+										<?php else : ?>
+											<option value="">No hay grupos registrados</option>
+										<?php endif; ?>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="position">Cargo:</label>
+									<select name="position" class="form-control" id="position">
+										<option value="">Seleccione cargo</option>
+										<?php $pos = array('Directivo', 'Miembro', 'Aspirante');
+										foreach ($pos as $value) { 
+											$selected = ($voluntary->position === $value) ? 'selected' : ''; ?>
+											<option <?php echo $selected ?> value="<?php echo $value; ?>"><?php echo $value; ?></option>
+										<?php } ?>
+									</select>
+								</div>
+								<?php Input::build('Especialidad', 'speciality', $voluntary->speciality); ?>
+								<div class="form-group">
+									<label for="equipment">Equipo:</label>
+									<?php $sistem = new Sistem('equipments'); ?>
+									<select name="equipment[]" multiple class="form-control" id="equipment">
+										<?php if ($sistem->get(array('id', '>', 0))) :
+											$relation = new Sistem('equipments_relations');
+											$relation->get(array('id_owner', '=', $voluntary->id));
+											foreach ($sistem->data() as $equipment) {
+												$selected = '';
+												foreach ($relation->data() as $select) {
+													if ($select->owner_type == 'voluntary' && $select->id_equipment == $equipment->id) {
+														$selected = 'selected';
+														break;
+													} ?>
+												<?php } ?>
+												<option <?php echo $selected; ?> value="<?php echo $equipment->id; ?>">
+													<?php echo $equipment->name; ?> - <?php echo $equipment->type; ?>
+												</option>
 											<?php } ?>
 										<?php else : ?>
 											<option value="">No hay equipos registrados</option>
 										<?php endif; ?>
 									</select>
 								</div>
-								<div class="form-group">
-									<label for="vehicle">Vehículo:</label>
-									<?php $sistem = new Sistem('vehicles'); ?>
-									<select name="vehicle" class="form-control" id="vehicle" value="<?php echo $voluntary->id_vehicle; ?>">
-										<?php if ($sistem->get(array('id', '>', 0))) : ?>
-											<?php foreach ($sistem->data() as $vehicle) { 
-												$selected = ($voluntary->id_vehicle === $vehicle->id) ? 'selected' : '';?>
-												<option <?php echo $selected; ?> value="<?php echo $vehicle->id; ?>"><?php echo $vehicle->model; ?> - <?php echo $vehicle->plate; ?></option>
-											<?php } ?>
-										<?php else : ?>
-											<option value="">No hay vehiculos registrados</option>
-										<?php endif; ?>
-									</select>
-								</div>
-								<div class="form-group">
-									<label for="type">Tipo:</label>
-									<input name="type" type="text" class="form-control" id="type" value="<?php echo $voluntary->type; ?>">
-								</div>
-								<div class="form-group">
-									<label for="state">Estado:</label>
-									<input name="state" type="text" class="form-control" id="state" value="<?php echo $voluntary->state; ?>">
-								</div>
+								<?php Input::buildState($voluntary->state); ?>
 								<input type="hidden" name="id" value="<?php echo Input::get('edit');?>">
 								<input type="hidden" name="token" value="<?php echo Token::generate();?>">
 								<input type="submit" name="edit" class="btn btn-primary" value="Editar"/>
@@ -437,12 +406,176 @@
 							} 
 						endif;?>
 					</div>
+				<?php elseif (Input::exists('get') && Input::get('view')) : ?>
+					<div class="col-sm-12">
+						<?php $sistem = new Sistem('volunteers');
+						if ($sistem->get(array('id', '=', Input::get('view')))) :
+							$voluntary = $sistem->data()[0]; ?>
+							<div class="col-sm-12">
+								<div class="row">
+									<?php if($user->hasPermission('admin')) { ?>
+										<a href="?edit=<?php echo $voluntary->id; ?>" class="btn btn-primary noPrint">Editar</a>
+									<?php } ?>
+									<a href="?" class="btn noPrint" onclick="window.print();">Imprimir</a>
+									<a href="?" class="btn noPrint">Ver Eventos</a>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="row">
+									<h3>Nombres: </h3>
+									<p><?php echo $voluntary->firstName; ?></p>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="row">
+									<h3>Apellidos: </h3>
+									<p><?php echo $voluntary->lastName; ?></p>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="row">
+									<h3>Genero: </h3>
+									<p><?php echo $voluntary->gender; ?></p>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="row">
+									<h3>Cedula de identidad: </h3>
+									<p><?php echo $voluntary->ci; ?></p>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="row">
+									<h3>Fecha de nacimiento: </h3>
+									<p><?php echo ($voluntary->birthday !== '0000-00-00') ? $voluntary->birthday: 'No registrado'; ?></p>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="row">
+									<h3>Dirección: </h3>
+									<p><?php echo $voluntary->address; ?></p>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="row">
+									<h3>Teléfono: </h3>
+									<p><?php echo $voluntary->phone; ?></p>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="row">
+									<h3>Correo eletrónico: </h3>
+									<p><?php echo $voluntary->email; ?></p>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="row">
+									<h3>Prefesión: </h3>
+									<p><?php echo ($voluntary->profession) ? $voluntary->profession: 'Vacío'; ?></p>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="row">
+									<h3>Ocupación: </h3>
+									<p><?php echo ($voluntary->employment) ? $voluntary->employment: 'Vacío'; ?></p>
+								</div>
+							</div>
+							<div class="col-sm-2">
+								<div class="row">
+									<h3>Talla de franela: </h3>
+									<p><?php echo ($voluntary->sizeShirt) ? $voluntary->sizeShirt: 'Vacío'; ?></p>
+								</div>
+							</div>
+							<div class="col-sm-2">
+								<div class="row">
+									<h3>Talla de pantalones: </h3>
+									<p><?php echo ($voluntary->sizePants) ? $voluntary->sizePants: 'Vacío'; ?></p>
+								</div>
+							</div>
+							<div class="col-sm-2">
+								<div class="row">
+									<h3>Talla de zapatos: </h3>
+									<p><?php echo ($voluntary->sizeShoes) ? $voluntary->sizeShoes: 'Vacío'; ?></p>
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="row">
+									<h3>Grupo: </h3>
+									<p><?php echo getData($voluntary->id_group, 'groups_2', 'name'); ?></p>
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="row">
+									<h3>Cargo: </h3>
+									<p><?php echo $voluntary->position; ?></p>
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="row">
+									<h3>Especialidad: </h3>
+									<p><?php echo ($voluntary->speciality) ? $voluntary->speciality: 'Vacío'; ?></p>
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="row">
+									<h3>Estado: </h3>
+									<p><?php echo ($voluntary->state) ? 'Activo': 'Inactivo'; ?></p>
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="row">
+									<?php $sistem = new Sistem('vehicles');
+									$sistem->get(array('id', '>', 0));
+									$posee = 'No';
+									foreach ($sistem->data() as $vehicle) {
+									 	if ($vehicle->id_voluntary == $voluntary->id) {
+									 		$posee = 'Sí';
+									 		break;
+									 	}
+									} ?>
+									<h3>Posee vehiculo: </h3>
+									<p><?php echo $posee; ?></p>
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="row">
+									<h3>Equipos: </h3>
+									<ul>
+										<?php $relation = new Sistem('equipments_relations');
+										$relation->get(array('id_owner', '=', $voluntary->id));
+										foreach ($relation->data() as $select) {
+											if ($select->owner_type == 'voluntary') { ?>
+												<li><?php echo getData($select->id_equipment, 'equipments', 'name'); ?> - <?php echo getData($select->id_equipment, 'equipments', 'type'); ?></li>
+											<?php }
+										} ?>
+									</ul>
+								</div>
+							</div>
+						<?php else : ?>
+							<p>Perdido?</p>
+							<a href="?" class="btn btn-primary">Ver Voluntarios</a>
+						<?php endif; ?>
+					</div>
 				<?php else : ?>
 					<div class="col-sm-12">
 						<?php if (Session::exists('volunteers')) {
 							handlerMessage(Session::flash('volunteers'), 'success');
 						} ?>
-						<h2>Voluntarios <a href="?new=true" class="btn btn-primary">Nuevo Voluntario</a></h2>
+						<h2 class="pull-left">Gestion de Voluntarios 
+							<?php if($user->hasPermission('admin')) { ?>
+								<a href="?new=true" class="btn btn-primary">Nuevo Voluntario</a>
+							<?php } ?>
+						</h2>
+						<form class="form-inline pull-right" action="" method="post">
+							<select class="form-control" name="type">
+								<option value="firstName">Nombre</option>
+								<option value="lastName">Apellido</option>
+								<option value="ci">Cedula de indentidad</option>
+							</select>
+							<?php Input::build('', 'field'); ?>
+							<input type="hidden" name="token" value="<?php echo Token::generate();?>">
+							<input type="submit" name="search" class="btn btn-primary" value="Buscar"/>
+						</form>
 						<table class="table table-striped">
 							<thead>
 								<tr>
@@ -451,53 +584,54 @@
 									<th>Apellido</th>
 									<th>Dirección</th>
 									<th>Telefono</th>
-									<th>Correo electronico</th>
-									<th>Talla de franela</th>
-									<th>Talla de pantalones</th>
-									<th>Talla de zapatos</th>
-									<th>Cargo</th>
-									<th>Profesión</th>
-									<th>Especialidad</th>
-									<th>Ocupación</th>
-									<th>Equipo</th>
-									<th>Vehículo</th>
-									<th>Tipo</th>
-									<th>Estado</th>
+									<th>Grupo</th>
 									<th>Opciones</th>
 								</tr>
 							</thead>
-							<tbody>
-								<?php $sistem = new Sistem('volunteers');
-								if (!$sistem->get(array('id', '>', 0))) : ?>
-									<tr>
-										<td colspan="18"><h3><center>No hay registro</center></h3></td>
-									</tr>
-								<?php else :
-									foreach ($sistem->data() as $voluntary) { ?>
+							<?php if (!empty($searchResults)): ?>
+								<tbody>
+									<?php foreach ($searchResults as $voluntary) { ?>
 										<tr>
 											<td><?php echo $voluntary->ci; ?></td>
 											<td><?php echo $voluntary->firstName; ?></td>
 											<td><?php echo $voluntary->lastName; ?></td>
 											<td><?php echo $voluntary->address; ?></td>
 											<td><?php echo $voluntary->phone; ?></td>
-											<td><?php echo $voluntary->email; ?></td>
-											<td><?php echo $voluntary->sizeShirt; ?></td>
-											<td><?php echo $voluntary->sizePants; ?></td>
-											<td><?php echo $voluntary->sizeShoes; ?></td>
-											<td><?php echo $voluntary->position; ?></td>
-											<td><?php echo $voluntary->profession; ?></td>
-											<td><?php echo $voluntary->speciality; ?></td>
-											<td><?php echo $voluntary->employment; ?></td>
-											<td><?php echo getData($voluntary->id_team, 'teams', 'name'); ?></td>
-											<td><?php echo getData($voluntary->id_vehicle, 'vehicles', 'plate'); ?> - <?php echo getData($voluntary->id_vehicle, 'vehicles', 'model'); ?></td>
-											<td><?php echo $voluntary->type; ?></td>
-											<td><?php echo $voluntary->state; ?></td>
-											<td><img src="<?php echo $voluntary->photo; ?>" alt="" width="100"></td>
-											<td><a href="?edit=<?php echo $voluntary->id; ?>">editar</a><td>
+											<td><?php echo getData($voluntary->id_group, 'groups_2', 'name'); ?></th>
+											<td>
+												<?php if($user->hasPermission('admin')) { ?>
+													<a href="?edit=<?php echo $voluntary->id; ?>">Editar</a><br />
+												<?php } ?>
+											<a href="?view=<?php echo $voluntary->id; ?>">Ver</a></td>
 										</tr>
 									<?php } ?>
-								<?php endif; ?>
-							</tbody>
+								</tbody>
+							<?php else : ?>
+								<tbody>
+									<?php $sistem = new Sistem('volunteers');
+									if (!$sistem->get(array('id', '>', 0))) : ?>
+										<tr>
+											<td colspan="18"><h3><center>No hay registro</center></h3></td>
+										</tr>
+									<?php else :
+										foreach ($sistem->data() as $voluntary) { ?>
+											<tr>
+												<td><?php echo $voluntary->ci; ?></td>
+												<td><?php echo $voluntary->firstName; ?></td>
+												<td><?php echo $voluntary->lastName; ?></td>
+												<td><?php echo $voluntary->address; ?></td>
+												<td><?php echo $voluntary->phone; ?></td>
+												<td><?php echo getData($voluntary->id_group, 'groups_2', 'name'); ?></th>
+												<td>
+													<?php if($user->hasPermission('admin')) { ?>
+														<a href="?edit=<?php echo $voluntary->id; ?>">Editar</a><br />
+													<?php } ?>
+												<a href="?view=<?php echo $voluntary->id; ?>">Ver</a></td>
+											</tr>
+										<?php } ?>
+									<?php endif; ?>
+								</tbody>
+							<?php endif; ?>
 						</table>
 					</div>
 				<?php endif; ?>

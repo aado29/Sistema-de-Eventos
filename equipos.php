@@ -3,19 +3,30 @@
 	$user = new User();
 
 	if(!$user->isLoggedIn()){
-		Redirect::to('index.php');
+		Redirect::to('login.php');
 	}
 
 	if (Input::exists()) {
 
 		if (Token::check(Input::get('token'))) {
 
+			if (Input::get('search')) {
+				$db = DB::getInstance();
+				$field = (Input::get('field')) ? "LIKE '%".Input::get('field')."%'": '';
+				$sql = "SELECT * FROM equipments WHERE name {$field}";
+				$check = $db->query($sql);
+
+				if($check->count()){
+					$searchResults = $check->results();
+				}
+			}
+
 			if (Input::get('delete')) {
 				try {
-					$sistem = new Sistem('teams');
+					$sistem = new Sistem('equipments');
 					$sistem->delete(escape(Input::get('id')));
 				
-					Session::flash('teams', 'El equipo ha sido eliminado con exito!');
+					Session::flash('equipments', 'El equipo ha sido eliminado con exito!');
 					Redirect::to('equipos.php');
 				} catch (Exception $e) {
 					$error = $e->getMessage();
@@ -25,48 +36,50 @@
 			$validate = new Validate();
 			$validation = $validate->check($_POST, array(
 				'name' => array(
-					'required' => TRUE,
+					'required' => true,
 					'min' => 3,
 					'max' => 50,
 					'display' => 'Nombre'
 				),
+				'type' => array(
+					'required' => true,
+					'min' => 5,
+					'max' => 50,
+					'display' => 'Tipo'
+				),
 				'description' => array(
-					'required' => TRUE,
+					'required' => true,
 					'min' => 2,
 					'max' => 100,
 					'display' => 'Descripción'
-				),
-				'state' => array(
-					'required' => TRUE,
-					'min' => 2,
-					'max' => 50,
-					'display' => 'Estado'
 				)
 			));
 
 			if ($validation->passed()) {
-				$sistem = new Sistem('teams');
+				$sistem = new Sistem('equipments');
 				
 				try{
 					if (Input::get('create')) {
 						$sistem->create(array(
 							'name' => escape(Input::get('name')),
+							'type' => escape(Input::get('type')),
 							'description' => escape(Input::get('description')),
 							'state' => escape(Input::get('state'))
 						));
 						
-						Session::flash('teams', 'El equipo ha sido registrado con exito!');
+						Session::flash('equipments', 'El equipo ha sido registrado con exito!');
 					}
 
 					if (Input::get('edit')) {
 						$sistem->update(array(
 							'id' => escape(Input::get('id')),
 							'name' => escape(Input::get('name')),
+							'type' => escape(Input::get('type')),
 							'description' => escape(Input::get('description')),
 							'state' => escape(Input::get('state'))
 						), escape(Input::get('id')));
 
-						Session::flash('teams', 'El equipo ha sido editado con exito!');
+						Session::flash('equipments', 'El equipo ha sido editado con exito!');
 					}
 					
 					Redirect::to('equipos.php');
@@ -93,18 +106,19 @@
 						} ?>
 						<h2>Equipos <a href="?" class="btn btn-primary">Ver Equipos</a></h2>
 						<form action="" method="post">
+							<?php Input::build('Nombre', 'name'); ?>
 							<div class="form-group">
-								<label for="name">Name:</label>
-								<input name="name" type="text" class="form-control" id="name">
+								<label for="type">Tipo:</label>
+								<select name="type" class="form-control" id="type">
+									<option value="">Seleccione tipo</option>
+									<?php $pos = array('Alpinismo', 'Rescate en agua', 'Estricamiento', 'Vialidad', 'Primeros Auxilios');
+									foreach ($pos as $value) { ?>
+										<option value="<?php echo $value; ?>"><?php echo $value; ?></option>
+									<?php } ?>
+								</select>
 							</div>
-							<div class="form-group">
-								<label for="description">Description:</label>
-								<input name="description" type="text" class="form-control" id="description">
-							</div>
-							<div class="form-group">
-								<label for="state">Estado:</label>
-								<input name="state" type="text" class="form-control" id="state">
-							</div>
+							<?php Input::build('Descripción', 'description'); ?>
+							<?php Input::buildState(); ?>
 							<input type="hidden" name="token" value="<?php echo Token::generate();?>">
 							<input type="submit" name="create" class="btn btn-primary" value="Registrar"/>
 						</form>
@@ -114,23 +128,25 @@
 						<?php if (!empty($error)) {
 							handlerMessage($error, 'danger');
 						} ?>
-						<?php $sistem = new Sistem('teams');
+						<?php $sistem = new Sistem('equipments');
 						if ($sistem->get(array('id', '=', Input::get('edit')))) : 
-							$team = $sistem->data()[0]; ?>
-							<h2>Gestionar Eventos</h2>
+							$equipment = $sistem->data()[0]; ?>
+							<h2>Gestionar Equipos</h2>
 							<form action="" method="post">
+								<?php Input::build('Nombre', 'name', $equipment->name); ?>
 								<div class="form-group">
-									<label for="name">Name:</label>
-									<input name="name" type="text" class="form-control" id="name" value="<?php echo $team->name; ?>">
-								</div>
-								<div class="form-group">
-									<label for="description">Description:</label>
-									<input name="description" type="text" class="form-control" id="description" value="<?php echo $team->description; ?>">
-								</div>
-								<div class="form-group">
-									<label for="state">Estado:</label>
-									<input name="state" type="text" class="form-control" id="state" value="<?php echo $team->state; ?>">
-								</div>
+								<label for="type">Tipo:</label>
+								<select name="type" class="form-control" id="type">
+									<option value="">Seleccione tipo</option>
+									<?php $pos = array('Alpinismo', 'Rescate en agua', 'Estricamiento', 'Vialidad', 'Primeros Auxilios');
+									foreach ($pos as $value) { 
+										$selected = ($equipment->type === $value) ? 'selected' : '';?>
+										<option <?php echo $selected; ?> value="<?php echo $value; ?>"><?php echo $value; ?></option>
+									<?php } ?>
+								</select>
+							</div>
+								<?php Input::build('Descripción', 'description', $equipment->description); ?>
+								<?php Input::buildState($equipment->state); ?>
 								<input type="hidden" name="id" value="<?php echo Input::get('edit');?>">
 								<input type="hidden" name="token" value="<?php echo Token::generate();?>">
 								<input type="submit" name="edit" class="btn btn-primary" value="Editar"/>
@@ -144,36 +160,67 @@
 					</div>
 				<?php else : ?>
 					<div class="col-sm-12">
-						<?php if (Session::exists('teams')) {
-							handlerMessage(Session::flash('teams'), 'success');
+						<?php if (Session::exists('equipments')) {
+							handlerMessage(Session::flash('equipments'), 'success');
 						} ?>
-						<h2>Equipos <a href="?new=true" class="btn btn-primary">Nuevo Equipo</a></h2>
+						<h2 class="pull-left">Equipos 
+						<?php if($user->hasPermission('admin')) { ?>
+							<a href="?new=true" class="btn btn-primary">Nuevo Equipo</a>
+						<?php } ?>
+						</h2>
+						<form class="form-inline pull-right" action="" method="post">
+							<?php Input::build('Nombre', 'field'); ?>
+							<input type="hidden" name="token" value="<?php echo Token::generate();?>">
+							<input type="submit" name="search" class="btn btn-primary" value="Buscar"/>
+						</form>
 						<table class="table table-striped">
 							<thead>
 								<tr>
 									<th>Nombre</th>
+									<th>Tipo</th>
 									<th>Descripción</th>
 									<th>Estado</th>
-									<th>Opciones</th>
+									<?php if($user->hasPermission('admin')) { ?>
+										<th>Opciones</th>
+									<?php } ?>
 								</tr>
 							</thead>
-							<tbody>
-								<?php $sistem = new Sistem('teams');
-								if (!$sistem->get(array('id', '>', 0))) : ?>
-									<tr>
-										<td colspan="4"><h3><center>No hay registro</center></h3></td>
-									</tr>
-								<?php else :
-									foreach ($sistem->data() as $team) { ?>
+							<?php if (!empty($searchResults)): ?>
+								<tbody>
+									<?php foreach ($searchResults as $equipment) { ?>
 										<tr>
-											<td><?php echo $team->name; ?></td>
-											<td><?php echo $team->description; ?></td>
-											<td><?php echo $team->state; ?></td>
-											<td><a href="?edit=<?php echo $team->id; ?>">editar</a><td>
+											<td><?php echo $equipment->name; ?></td>
+											<td><?php echo $equipment->type; ?></td>
+											<td><?php echo $equipment->description; ?></td>
+											<td><?php echo ($equipment->state) ? 'Activo': 'Inactivo'; ?></td>
+											<?php if($user->hasPermission('admin')) { ?>
+												<td><a href="?edit=<?php echo $equipment->id; ?>">editar</a><td>
+											<?php } ?>
 										</tr>
 									<?php } ?>
-								<?php endif; ?>
-							</tbody>
+								</tbody>
+							<?php else : ?>
+								<tbody>
+									<?php $sistem = new Sistem('equipments');
+									if (!$sistem->get(array('id', '>', 0))) : ?>
+										<tr>
+											<td colspan="4"><h3><center>No hay registro</center></h3></td>
+										</tr>
+									<?php else :
+										foreach ($sistem->data() as $equipment) { ?>
+											<tr>
+												<td><?php echo $equipment->name; ?></td>
+												<td><?php echo $equipment->type; ?></td>
+												<td><?php echo $equipment->description; ?></td>
+												<td><?php echo ($equipment->state) ? 'Activo': 'Inactivo'; ?></td>
+												<?php if($user->hasPermission('admin')) { ?>
+													<td><a href="?edit=<?php echo $equipment->id; ?>">editar</a><td>
+												<?php } ?>
+											</tr>
+										<?php } ?>
+									<?php endif; ?>
+								</tbody>
+							<?php endif; ?>
 						</table>
 					</div>
 				<?php endif; ?>

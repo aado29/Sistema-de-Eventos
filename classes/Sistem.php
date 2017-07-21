@@ -42,28 +42,6 @@ class Sistem {
 		}
 	}
 
-	public function getByDate($date = null) {
-		if (!is_null($date)) {
-			$sql = "SELECT * from $this->_type WHERE startDate = '{$date}'";
-			$data = $this->_db->query($sql);
-			if ($data->count())
-				return $data->results();
-		}
-		return false;
-	}
-
-	public function getBetweenDates($date = null, $_date = null) {
-		if (is_null($date) || is_null($_date)) {
-			return false;
-		} else {
-			$sql = "SELECT * from $this->_type WHERE startDate BETWEEN '{$date}' AND '{$_date}'";
-			$data = $this->_db->query($sql);
-			if ($data->count())
-				return $data->results();
-		}
-		return false;
-	}
-
 	public function getById($id = null) {
 		if (!is_null($id)) {
 			$data = $this->_db->get($this->_type, array('id', '=', $id));

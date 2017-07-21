@@ -21,6 +21,7 @@ if (Input::exists()) {
 gettemplate('header');
 ?>
 <form action="" method="post" enctype="multipart/form-data">
+	<?php getTreeType('type', 'Tipo'); ?>
 	<div class="form-group">
 		<label for="photo">Foto</label>
 		<input class="form-control" type="file" name="photo" id="photo">

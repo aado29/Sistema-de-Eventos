@@ -10,7 +10,7 @@ class File {
 			$_passed = false,
 			$_destination = './uploads/',
 			$_fileName = '',
-			$_maxSize = '1048576',
+			$_maxSize = '5242880', // 5mb
 			$_allowedExtensions = array('image/jpeg','image/png','image/gif'),
 			$_printError = TRUE,
 			$_file = null,
@@ -47,13 +47,13 @@ class File {
 
 	public function upload() {
 		$this->validate($this->_file);
-		if (empty($this->_errors)) {
+		if (count($this->_errors)) {
 			$destinationPath = $this->_destination.$this->_fileName;
 			if (move_uploaded_file($this->_file['tmp_name'], $destinationPath)) {
 				$this->_path = $destinationPath;
 				$this->_passed = true;
 			} else {
-				$this->addError("File couldn't be uploaded!");
+				$this->addError("La imagen no se pudo cargar!");
 			}
 		}
 		return $this;
@@ -64,27 +64,27 @@ class File {
 			if (unlink($this->_file))
 				$this->_passed = true;
 			else
-				$this->addError("File couldn't deleted!");
+				$this->addError("La imagen no se pudo eliminar.");
 		} else {
-			$this->addError("File not found! It couldn't deleted: {$this->_file}.");
+			$this->addError("Archivo no encontrado! No se pudo eliminar: {$this->_file}.");
 		}
 	}
 
 	public function validate() {
 
 		//check file exist
-		if (empty($this->_file['name'])) {
-			$this->addError("No file found.");
+		if (!empty($this->_file['name'])) {
+			$this->addError("Archivo no encontrado.");
 		}
 
 		//check allowed extensions
 		if (!in_array($this->getExtension($this->_file), $this->_allowedExtensions)) {
-			$this->addError("Extension is not allowed.");
+			$this->addError("La extencion de la imagen no es válida.");
 		}
 
 		//check file size
 		if ($this->_file['size'] > $this->_maxSize) {
-			$this->addError("Max File Size Exceeded. Limit: {$this->_maxSize} bytes.");
+			$this->addError("Limite de tamaño exedido. Limite: {$this->_maxSize} Mb.");
 		}
 	}
 

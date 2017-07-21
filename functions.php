@@ -42,27 +42,98 @@
 		return 'No existente';
 	}
 
-	function getReportByDate($date = null) {
-		if (is_null($date))
-			$date = date('Y-m-d');
-		$sistem = new Sistem('events');
-		return $sistem->getByDate($date);
-	}
-
-	function getReportByRangeDate($date = null, $date_ = null) {
-		if (is_null($date) || is_null($date_))
+	function getEventsReport($from = null, $to = null, $type) {
+		if (is_null($from) || is_null($to))
 			return array();
-		$sistem = new Sistem('events');
-		return $sistem->getBetweenDates($date, $date_);
+		$db = DB::getInstance();
+		$t = (!empty($type)) ? "id_events_type LIKE {$type}": "";
+		$d = (!empty($from) && !empty($to)) ? "startDate BETWEEN '{$from}' AND '{$to}'": "";
+		$a = (!empty($t) && !empty($d)) ? "AND": "";
+		$sql = "SELECT * from events WHERE {$t} {$a} {$d}";
+		$results = $db->query($sql);
+		if ($results->count()) {
+			return $results->results();
+		} else {
+			return false;
+		}
 	}
 
-	function getTreeType($fieldName, $label) {
+	function getGroupsReport($speciality = null, $status = null) {
+		if (is_null($speciality) || is_null($status))
+			return array();
+		$db = DB::getInstance();
+		$t = (!empty($speciality)) ? "speciality LIKE '{$speciality}'": "";
+		$d = (!empty($status) ) ? "state LIKE {$status}": "";
+		$a = (!empty($t) && !empty($d)) ? "AND": "";
+		$sql = "SELECT * from groups_2 WHERE {$t} {$a} {$d}";
+		$results = $db->query($sql);
+		if ($results->count()) {
+			return $results->results();
+		} else {
+			return false;
+		}
+
+	}
+
+	function getVehiclesReport($type = null, $status = null) {
+		if (is_null($type) || is_null($status))
+			return array();
+		$db = DB::getInstance();
+		$t = (!empty($type)) ? "type LIKE '{$type}'": "";
+		$d = "state LIKE {$status}";
+		$a = (!empty($t) && !empty($d)) ? "AND": "";
+		$sql = "SELECT * from vehicles WHERE {$t} {$a} {$d}";
+		$results = $db->query($sql);
+		if ($results->count()) {
+			return $results->results();
+		} else {
+			return false;
+		}
+	}
+
+	function getEquipmentsReport($type = null, $status = null) {
+		if (is_null($type) || is_null($status))
+			return array();
+		$db = DB::getInstance();
+		$t = (!empty($type)) ? "type LIKE '{$type}'": "";
+		$d = "state LIKE {$status}";
+		$a = (!empty($t) && !empty($d)) ? "AND": "";
+		$sql = "SELECT * from equipments WHERE {$t} {$a} {$d}";
+		$results = $db->query($sql);
+		if ($results->count()) {
+			return $results->results();
+		} else {
+			return false;
+		}
+	}
+
+	function getVolunteersReport($group = null, $proffession = null, $speciality = null, $state = null) {
+		if (is_null($group) || is_null($proffession)|| is_null($speciality)|| is_null($state))
+			return array();
+		$db = DB::getInstance();
+		$g = (!empty($group)) ? "id_group LIKE {$group}": "";
+		$p = (!empty($proffession)) ? "proffession LIKE '{$proffession}'": "";
+		$sp = (!empty($speciality)) ? "speciality LIKE '{$speciality}'": "";
+		$st = "state LIKE {$state}";
+		$a = (!empty($g) && !empty($st)) ? "AND": "";
+		$sql = "SELECT * from volunteers WHERE {$g} {$a} {$st}";
+		echo $sql;
+		$results = $db->query($sql);
+		if ($results->count()) {
+			return $results->results();
+		} else {
+			return false;
+		}
+	}
+
+	function getTreeType($label, $fieldName) {
 		$sistem = new Sistem('events_type');
 		$sistem->get(array('id', '>', 0));
 		$data = $sistem->data();
 		$output = '<div class="form-group">';
 			$output .= '<label for="' . $fieldName . '">' . $label . '</label>';
 			$output .= '<select class="form-control" name="' . $fieldName . '" id="' . $fieldName . '">';
+				$output .= '<option value="">Seleccione '. $label .'</option>';
 				$output .= treeToHTML(buildTree($data));
 			$output .= '</select>';
 		$output .= '</div>';
@@ -100,4 +171,13 @@
 			}
 		}
 		return $branch;
+	}
+
+	function buildInputText($label, $name, $value = '', $type = 'text') {
+		$output = '';
+		$output .= '<div class="form-group">';
+			$output .= '<label for="'. $name .'">'. $label .':</label>';
+			$output .= '<input name="'. $name .'" type="'. $type .'" class="form-control" id="'. $name .'" value="'. $value .'">';
+		$output .= '</div>';
+		echo $output;
 	}

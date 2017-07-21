@@ -2,8 +2,11 @@
 	require_once 'core/init.php';
 	$user = new User();
 
-	if(!$user->isLoggedIn()){
-		Redirect::to('index.php');
+	if(!$user->isLoggedIn()) {
+		Redirect::to('login.php');
+	}
+	if(!$user->hasPermission('admin')) {
+		Redirect::to('eventos.php');
 	}
 
 	if (Input::exists()) {
@@ -186,30 +189,13 @@
 						} ?>
 						<h2>Gestionar usuarios <a href="?" class="btn btn-primary">Ver Usuarios</a></h2>
 						<form action="" method="post">
-							<div class="form-group">
-								<label for="ci">Cedula</label>
-								<input class="form-control" type="number" name="ci" id="ci" value="<?php echo escape(Input::get('ci')); ?>" autocomplete="off">    
-							</div>
-							<div class="form-group">
-								<label for="username">Nombre de usuario</label>
-								<input class="form-control" type="text" name="username" id="username" value="<?php echo escape(Input::get('username')); ?>" autocomplete="off">    
-							</div>
-							<div class="form-group">
-								<label for="firstName">Nombre</label>
-								<input class="form-control" type="text" name="firstName" id="firstName" value="<?php echo escape(Input::get('firstName')); ?>">    
-							</div>
-							<div class="form-group">
-								<label for="lastName">Apellido</label>
-								<input class="form-control" type="text" name="lastName" id="lastName" value="<?php echo escape(Input::get('lastName')); ?>">    
-							</div>
-							<div class="form-group">
-								<label for="email">Correo Electrónico</label>
-								<input class="form-control" type="email" name="email" id="email" value="<?php echo escape(Input::get('email')); ?>">    
-							</div>
-							<div class="form-group">
-								<label for="phone">Telefono</label>
-								<input class="form-control" type="tel" name="phone" id="phone" value="<?php echo escape(Input::get('phone')); ?>">    
-							</div>
+							<?php Input::build('Cedula', 'ci', '', 'number'); ?>
+							<?php Input::build('Nombre de Usuario', 'username'); ?>
+							<?php Input::build('Nombres', 'firstName'); ?>
+							<?php Input::build('Apellidos', 'lastName'); ?>
+							<?php Input::build('Correo electónico', 'email', '', 'email'); ?>
+							<?php Input::build('Telefono', 'phone', '', 'tel'); ?>
+							
 							<div class="form-group">
 								<label for="group">Tipo:</label>
 								<?php $sistem = new Sistem('groups'); ?>
@@ -223,18 +209,8 @@
 									<?php endif; ?>
 								</select>
 							</div>
-							<div class="form-group">
-								<label for="password">Contraseña</label>
-								<input class="form-control" type="password" name="password" id="password">    
-							</div> 
-							<div class="form-group">
-								<label for="password_again">Repita su contraseña</label>
-								<input class="form-control" type="password" name="password_again" id="password_again">
-							</div>
-							<div class="form-group">
-								<label for="photo">Foto</label>
-								<input class="form-control" type="file" name="photo" id="photo">
-							</div>
+							<?php Input::build('Contraseña', 'password', '', 'password'); ?>
+							<?php Input::build('Repita su contraseña', 'password_again', '', 'password'); ?>
 							<input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
 							<input type="submit" name="create" class="btn btn-primary" value="Registrar">
 						</form>
@@ -249,30 +225,14 @@
 							$user = $sistem->data()[0]; ?>
 							<h2>Gestionar Usuarios</h2>
 							<form action="" method="post">
-								<div class="form-group">
-									<label for="ci">Cedula</label>
-									<input class="form-control" type="number" name="ci" id="ci" value="<?php echo $user->ci; ?>">
-								</div>
-								<div class="form-group">
-									<label for="username">Nombre de usuario</label>
-									<input class="form-control" type="text" name="username" id="username" value="<?php echo $user->username; ?>">    
-								</div>
-								<div class="form-group">
-									<label for="firstName">Nombre</label>
-									<input class="form-control" type="text" name="firstName" id="firstName" value="<?php echo $user->firstName; ?>">    
-								</div>
-								<div class="form-group">
-									<label for="lastName">Apellido</label>
-									<input class="form-control" type="text" name="lastName" id="lastName" value="<?php echo $user->lastName; ?>">    
-								</div>
-								<div class="form-group">
-									<label for="email">Correo Electrónico</label>
-									<input class="form-control" type="email" name="email" id="email" value="<?php echo $user->email; ?>">    
-								</div>
-								<div class="form-group">
-									<label for="phone">Telefono</label>
-									<input class="form-control" type="tel" name="phone" id="phone" value="<?php echo $user->phone; ?>">
-								</div>
+
+								<?php Input::build('Cedula', 'ci', $user->ci, 'number') ?>
+								<?php Input::build('Nombre de Usuario', 'username', $user->username); ?>
+								<?php Input::build('Nombres', 'firstName', $user->firstName); ?>
+								<?php Input::build('Apellidos', 'lastName', $user->lastName); ?>
+								<?php Input::build('Correo electónico', 'email', $user->email, 'email'); ?>
+								<?php Input::build('Telefono', 'phone', $user->phone, 'tel'); ?>
+								
 								<div class="form-group">
 									<label for="group">Tipo:</label>
 									<?php $sistem = new Sistem('groups'); ?>
@@ -283,7 +243,7 @@
 												<option <?php echo $selected; ?> value="<?php echo $group->id; ?>"><?php echo $group->name; ?></option>
 											<?php } ?>
 										<?php else : ?>
-											<option value="">No hay equipos registrados</option>
+											<option value="">No hay grupo registrados</option>
 										<?php endif; ?>
 									</select>
 								</div>

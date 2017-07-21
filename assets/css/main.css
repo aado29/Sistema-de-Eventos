@@ -1,3 +1,11 @@
+body {
+	color: #103488;
+}
+
+a {
+	color: #EF6A05;
+}
+
 .navbar-inverse {
 	background-color: #103488;
 	border-color: #103488;
