@@ -132,7 +132,6 @@
 			$sql = "SELECT * from volunteers WHERE id_group = {$group} AND profession = '{$profession}' AND speciality = '{$speciality}' AND state = {$state}";
 		}
 		$results = $db->query($sql);
-		echo $sql;
 		if ($results->count()) {
 			return $results->results();
 		} else {

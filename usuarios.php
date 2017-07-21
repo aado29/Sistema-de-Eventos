@@ -84,11 +84,16 @@
 				));
 			}
 			if (Input::get('edit')) {
+				$id_unique = (Input::get('id')) ? escape(Input::get('id')): 10000000;
 				$validation = $validate->check($_POST, array(
 					'ci' => array(
 						'required' => TRUE,
 						'min' => 7,
 						'max' => 8,
+						'uniqueById' => array(
+							'id' => $id_unique,
+							'table' => 'users'
+						),
 						'display' => 'Cedula'
 					),
 					'username' => array(
@@ -159,7 +164,7 @@
 							'lastName' => escape(Input::get('lastName')),
 							'email' => escape(Input::get('email')),
 							'phone' => escape(Input::get('phone'))
-							// 'group' => escape(Input::get('group'))
+							//'group' => escape(Input::get('group'))
 						), escape(Input::get('id')));
 
 						Session::flash('users', 'El usuario ha sido modificado con exito!');

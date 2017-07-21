@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Jul 21, 2017 at 09:27 PM
+-- Generation Time: Jul 22, 2017 at 01:00 AM
 -- Server version: 5.6.35
 -- PHP Version: 7.1.1
 
@@ -57,14 +57,23 @@ CREATE TABLE `equipments_relations` (
 INSERT INTO `equipments_relations` (`id`, `id_equipment`, `id_owner`, `owner_type`) VALUES
 (7, 1, 4, 'group'),
 (14, 1, 5, 'voluntary'),
-(17, 1, 1, 'voluntary'),
-(18, 2, 1, 'voluntary'),
 (19, 2, 3, 'group'),
-(24, 1, 1, 'group'),
-(25, 2, 1, 'group'),
-(26, 2, 2, 'voluntary'),
 (27, 1, 4, 'voluntary'),
-(28, 2, 4, 'voluntary');
+(28, 2, 4, 'voluntary'),
+(29, 1, 6, 'voluntary'),
+(30, 2, 6, 'voluntary'),
+(31, 1, 7, 'voluntary'),
+(32, 2, 7, 'voluntary'),
+(33, 1, 8, 'voluntary'),
+(34, 2, 8, 'voluntary'),
+(35, 1, 9, 'voluntary'),
+(36, 2, 9, 'voluntary'),
+(60, 1, 10, 'voluntary'),
+(63, 2, 2, 'voluntary'),
+(70, 1, 1, 'voluntary'),
+(71, 2, 1, 'voluntary'),
+(76, 1, 1, 'group'),
+(77, 2, 1, 'group');
 
 -- --------------------------------------------------------
 
@@ -183,7 +192,7 @@ CREATE TABLE `groups` (
 --
 
 INSERT INTO `groups` (`id`, `name`, `permissions`) VALUES
-(1, 'Usuario estándar', ''),
+(1, 'Usuario estandar', ''),
 (2, 'Administrador', '{\"admin\":1,\"moderator\":1}');
 
 -- --------------------------------------------------------
@@ -201,6 +210,7 @@ CREATE TABLE `groups_2` (
   `address` varchar(100) NOT NULL,
   `email` varchar(50) NOT NULL,
   `membersNumber` int(2) NOT NULL,
+  `image` varchar(100) NOT NULL,
   `state` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -208,11 +218,13 @@ CREATE TABLE `groups_2` (
 -- Dumping data for table `groups_2`
 --
 
-INSERT INTO `groups_2` (`id`, `name`, `speciality`, `description`, `phone`, `address`, `email`, `membersNumber`, `state`) VALUES
-(1, 'Grupo 1', 'ahola', 'hola', '04149641997', 'dn;dd alDNL', 'aado@sda.akd', 23, '1'),
-(2, 'Grupo 2', 'ahola', 'hola', '2147483647', 'dn;dd alDNL', 'aado@sda.akd', 20, '1'),
-(3, 'Grupo 3', 'ahola', 'hola', '2147483647', 'dn;dd alDNL', 'aado@sda.akd', 20, '0'),
-(4, 'Grupo 4', 'Spect 2', 'descripcion', '2147483647', 'kshaddkas', 'dmsdlnd@znls.com', 23, '1');
+INSERT INTO `groups_2` (`id`, `name`, `speciality`, `description`, `phone`, `address`, `email`, `membersNumber`, `image`, `state`) VALUES
+(1, 'Grupo 1', 'ahola', 'hola', '04149641997', 'dn;dd alDNL', 'aado@sda.akd', 23, './uploads/bf1e24b4d4860e1f8cbfc29f242f518b.jpg', '1'),
+(2, 'Grupo 2', 'ahola', 'hola', '2147483647', 'dn;dd alDNL', 'aado@sda.akd', 20, '', '1'),
+(3, 'Grupo 3', 'ahola', 'hola', '2147483647', 'dn;dd alDNL', 'aado@sda.akd', 20, '', '0'),
+(4, 'Grupo 4', 'Spect 2', 'descripcion', '2147483647', 'kshaddkas', 'dmsdlnd@znls.com', 23, '', '1'),
+(5, 'grupo 7', 'sar', 'rescate', '12345678654', 'hdhfhjkfhsdj', 'sdfajasdklfjdsa@fdsfs', 34, './uploads/3e2d60cd85793e7e5c1b6dee1f169b29.jpg', '1'),
+(6, 'fsdafdsfdsfds', 'sdfdsfa', 'sdfa', '12345678912', 'dsfdsfds', 'sdfdsfsd@fdsfds', 1, './uploads/4cbc0708abf3de632ad93f94003d4878.jpg', '1');
 
 -- --------------------------------------------------------
 
@@ -240,8 +252,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `ci`, `username`, `password`, `salt`, `firstName`, `lastName`, `phone`, `email`, `joined`, `group`) VALUES
 (1, 12345678, 'aado29', 'c9ed5c749ebc269bf230aebc23ec7c5b79af8271842e53eea6d8ba587e6de978', '', 'Alberto', 'Diaz', '04149641997', 'aado29@gmail.com', '2017-07-01 00:30:59', 2),
-(2, 21367773, 'aado_', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', '', 'alber', 'diaz', '2147483647', 'aa@hma.com', '2017-07-01 00:33:34', 2),
-(3, 21367773, 'Alberto', 'c9ed5c749ebc269bf230aebc23ec7c5b79af8271842e53eea6d8ba587e6de978', '', 'Alberto', 'Diaz', '2147483647', 'aado29@hshsk.com', '2017-07-03 22:02:00', 2);
+(4, 1234567, 'Administrador', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', '', 'Administrador', 'Sistema', '12345678912', 'admin@admin', '2017-07-22 00:30:36', 2),
+(5, 21367773, 'aado', 'c9ed5c749ebc269bf230aebc23ec7c5b79af8271842e53eea6d8ba587e6de978', '', 'Alberto', 'Diaz', '04148641997', 'aado9@gmail.com', '2017-07-22 00:37:40', 2);
 
 -- --------------------------------------------------------
 
@@ -318,10 +330,15 @@ CREATE TABLE `volunteers` (
 --
 
 INSERT INTO `volunteers` (`id`, `photo`, `ci`, `firstName`, `lastName`, `gender`, `birthday`, `address`, `phone`, `email`, `profession`, `employment`, `sizeShirt`, `sizePants`, `sizeShoes`, `id_group`, `position`, `speciality`, `id_equipment`, `state`) VALUES
-(1, '', 21367773, 'Nombre', 'Apellido', 'Masculino', '0000-00-00', 'Direccion', '04145382773', 'amadlna@lmafl.as', 'Profecion', 'Ocupacion', 'L', '34', 37, 1, 'Directivo', 'Especialidad', 1, '1'),
-(2, './uploads/a8761aa4df53b9ead41d02786f371bcb.jpg', 12343829, 'alberto', 'alberot', 'Femenino', '2017-07-21', 'jbdkaDKPq ', '04146930816', 'kandkNA@KANDKSAN.ASKDN', 'daldlas`', 'm asdna', 'SS', '20', 30, 1, 'Directivo', 'knkandsan', 1, '0'),
+(1, './uploads/1e9fa870b4e03101b0bb41f94272c1b8.jpg', 21367773, 'Nombre', 'Apellido Ap', 'Masculino', '1994-11-29', 'Direccion', '04145382773', 'amadlna@lmafl.as', 'Profecion', 'Ocupacion', 'L', '34', 37, 1, 'Directivo', 'Especialidad', 1, '1'),
+(2, '', 12343829, 'alberto', 'alberot', 'Femenino', '1997-07-21', 'jbdkaDKPq ', '04146930816', 'kandkNA@KANDKSAN.ASKDN', 'daldlas`', 'm asdna', 'SS', '20', 30, 1, 'Directivo', 'knkandsan', 1, '0'),
 (4, '', 21367774, 'aiNDs', 'aldlms', 'Femenino', '1994-11-29', 'sndadkl', '04149641997', 'askndkal@djso.sdkn', 'pelabola', '', 'SS', '20', 30, 1, 'Directivo', '', 1, '1'),
-(5, '', 26234987, 'nom2', 'ape2', 'Otro', '0000-00-00', 'dirsaddsada1', '2147483647', 'frergreg@fsdfa.43', 'dgfdfsgdfsg', 'dsfg', '', '', 0, 2, 'Directivo', 'dfsdfsdfdsafsa', 0, '0');
+(5, '', 26234987, 'nom2', 'ape2', 'Otro', '0000-00-00', 'dirsaddsada1', '2147483647', 'frergreg@fsdfa.43', 'dgfdfsgdfsg', 'dsfg', '', '', 0, 2, 'Directivo', 'dfsdfsdfdsafsa', 0, '0'),
+(6, './uploads/6b9187b8706095d084466afa60f291a9.jpg', 21367779, 'Nombre', 'Apellido', 'Masculino', '1998-06-02', 'Direccion', '04148374839', 'sdnkasndka@khcks.sk', 'Profesion', 'Ocupacion', 'S', '26', 34, 1, 'Miembro', 'Especialidad', 0, '1'),
+(7, './uploads/d897ad983f50f26e45b5c75e761b138e.jpg', 21367778, 'Nombre', 'Apellido', 'Masculino', '1998-06-02', 'Direccion', '04148374839', 'sdnkasndka@khcks.sk', 'Profesion', 'Ocupacion', 'S', '26', 34, 1, 'Miembro', 'Especialidad', 0, '1'),
+(8, './uploads/7afd79560cc4a56631fd90ab92ac6390.jpg', 21367772, 'Nombre', 'Apellido', 'Masculino', '1998-06-02', 'Direccion', '04148374839', 'sdnkasndka@khcks.sk', 'Profesion', 'Ocupacion', 'S', '26', 34, 1, 'Miembro', 'Especialidad', 0, '1'),
+(9, './uploads/c8661d8e886bb7defa8393ae3af09012.jpg', 213677723, 'Nombre', 'Apellido', 'Masculino', '1998-06-02', 'Direccion', '04148374839', 'sdnkasndka@khcks.sk', 'Profesion', 'Ocupacion', 'S', '26', 34, 1, 'Miembro', 'Especialidad', 0, '1'),
+(10, '', 18202495, 'jonathan', 'leon', 'Masculino', '1982-03-21', 'hdsjhfjksdhjkfdsa', '12345678654', 'cvvsdaf@fsadfadsfdsf', 'dfsdfds', 'dsfa', '', '', 0, 3, 'Aspirante', 'cxzcxzc', 0, '1');
 
 --
 -- Indexes for dumped tables
@@ -406,7 +423,7 @@ ALTER TABLE `equipments`
 -- AUTO_INCREMENT for table `equipments_relations`
 --
 ALTER TABLE `equipments_relations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 --
 -- AUTO_INCREMENT for table `events`
 --
@@ -431,17 +448,17 @@ ALTER TABLE `groups`
 -- AUTO_INCREMENT for table `groups_2`
 --
 ALTER TABLE `groups_2`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `users_session`
 --
 ALTER TABLE `users_session`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `vehicles`
 --
@@ -451,4 +468,4 @@ ALTER TABLE `vehicles`
 -- AUTO_INCREMENT for table `volunteers`
 --
 ALTER TABLE `volunteers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;

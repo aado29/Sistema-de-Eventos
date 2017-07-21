@@ -15,18 +15,18 @@
 <body>
 	<div class="container">
 		<div class="row navtop">
-			<div class="col-xs-3"><img src="assets/images/logo_pc.jpeg" class="img-responsive logo" alt=""></div>
+			<div class="col-xs-3"><img src="assets/images/logo_pc.png" class="img-responsive logo" alt=""></div>
 			<div class="col-xs-6">
 				<center class="title">
-					<h4>REPUBLICA BOLIVARIANA DE VENEZUELA<br />
-					ESTADO ZULIA MUNICIPIO MARACAIBO<br />
-					DIRECCION MUNICIPAL DE PROTECCION CIVIL <br />
-					Y ADMINISTRACION DE DESASTRES<br />
-					SISTEMA DE IFMORMACION WEB<br />
-					GESTION DE EVENTOS</h4>
+					<h4 class="capitalize">republica bolivariana de venezuela<br/>
+					estado zulia municipio maracaibo<br/>
+					direccion municipal de proteccion civil<br/>
+					y administracion de desastres<br/>
+					sistema de informacion web<br/>
+					gestion de eventos</h4>
 				</center>
 			</div>
-			<div class="col-xs-3"><img src="assets/images/logo_az.jpeg" class="pull-right img-responsive logo" alt=""></div>
+			<div class="col-xs-3"><img src="assets/images/logo_az.png" class="pull-right img-responsive logo" alt=""></div>
 		</div>
 		<div class="row">
 			<nav class="navbar navbar-inverse">
@@ -40,7 +40,7 @@
 						<li><a href="voluntarios.php">Voluntarios</a></li>
 						<li><a href="vehiculos.php">Vehiculos</a></li>
 						<li><a href="equipos.php">Equipamientos</a></li>
-						<?php if($user->hasPermission('admin')) { ?>
+						<?php if ($user->isLoggedIn() && $user->hasPermission('admin')) { ?>
 							<li><a href="reportes.php">Reportes</a></li>
 							<li><a href="usuarios.php">Usuarios</a></li>
 						<?php } ?>
