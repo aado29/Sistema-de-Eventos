@@ -49,6 +49,9 @@
 		$t = (!empty($type)) ? "id_events_type LIKE {$type}": "";
 		$d = (!empty($from) && !empty($to)) ? "startDate BETWEEN '{$from}' AND '{$to}'": "";
 		$a = (!empty($t) && !empty($d)) ? "AND": "";
+		if (empty($t) && empty($d)) {
+			return false;
+		};
 		$sql = "SELECT * from events WHERE {$t} {$a} {$d}";
 		$results = $db->query($sql);
 		if ($results->count()) {
@@ -63,7 +66,7 @@
 			return array();
 		$db = DB::getInstance();
 		$t = (!empty($speciality)) ? "speciality LIKE '{$speciality}'": "";
-		$d = (!empty($status) ) ? "state LIKE {$status}": "";
+		$d = "state LIKE {$status}";
 		$a = (!empty($t) && !empty($d)) ? "AND": "";
 		$sql = "SELECT * from groups_2 WHERE {$t} {$a} {$d}";
 		$results = $db->query($sql);
@@ -107,18 +110,29 @@
 		}
 	}
 
-	function getVolunteersReport($group = null, $proffession = null, $speciality = null, $state = null) {
-		if (is_null($group) || is_null($proffession)|| is_null($speciality)|| is_null($state))
+	function getVolunteersReport($group = null, $profession = null, $speciality = null, $state = null) {
+		if (is_null($group) || is_null($profession)|| is_null($speciality)|| is_null($state))
 			return array();
 		$db = DB::getInstance();
-		$g = (!empty($group)) ? "id_group LIKE {$group}": "";
-		$p = (!empty($proffession)) ? "proffession LIKE '{$proffession}'": "";
-		$sp = (!empty($speciality)) ? "speciality LIKE '{$speciality}'": "";
-		$st = "state LIKE {$state}";
-		$a = (!empty($g) && !empty($st)) ? "AND": "";
-		$sql = "SELECT * from volunteers WHERE {$g} {$a} {$st}";
-		echo $sql;
+		if (!empty($speciality && empty($profession) && empty($group))) {
+			$sql = "SELECT * from volunteers WHERE state = {$state} AND speciality = '{$speciality}'";
+		} elseif (!empty($profession && empty($speciality) && empty($group))) {
+			$sql = "SELECT * from volunteers WHERE state = {$state} AND profession = '{$profession}'";
+		} elseif (!empty($group) && empty($speciality) && empty($profession)) {
+			$sql = "SELECT * from volunteers WHERE state = {$state} AND id_group = {$group}";
+		} elseif (!empty($profession) && !empty($speciality)) {
+			$sql = "SELECT * from volunteers WHERE profession = '{$profession}' AND speciality = '{$speciality}' AND state = {$state}";
+		} elseif (!empty($group) && !empty($speciality)) {
+			$sql = "SELECT * from volunteers WHERE id_group = {$group} AND speciality = '{$speciality}' AND state = {$state}";
+		} elseif (!empty($profession) && !empty($group)) {
+			$sql = "SELECT * from volunteers WHERE profession = '{$profession}' AND id_group = {$group} AND state = {$state}";
+		} elseif (empty($profession) && empty($group) && empty($speciality)) {
+			$sql = "SELECT * from volunteers WHERE state = {$state}";
+		} else {
+			$sql = "SELECT * from volunteers WHERE id_group = {$group} AND profession = '{$profession}' AND speciality = '{$speciality}' AND state = {$state}";
+		}
 		$results = $db->query($sql);
+		echo $sql;
 		if ($results->count()) {
 			return $results->results();
 		} else {

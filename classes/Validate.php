@@ -23,7 +23,7 @@ class Validate {
 					$displayName = $items[$item]['display'];
 				}
 				
-				if($rule === 'required' && empty($value)){
+				if(($rule === 'required' && empty($value)) || ($rule === 'array' && count($value))){
 					$this->addError("{$displayName} es obligatorio");
 				}  else if(!empty ($value)){
 					switch ($rule) {
@@ -52,9 +52,46 @@ class Validate {
 								$this->addError("{$displayName} ya existe.");
 							}
 							break;
+						case 'uniqueById':
+							$sql = "SELECT * FROM {$rule_value['table']} WHERE {$item} = '{$value}' AND id != {$rule_value['id']}";
+                            $check = $this->_db->query($sql);
+                            if($check->count()){
+                                $this->addError("{$displayName} ya se ecuentra registrado.");
+                            }
+							break;
 						case 'date_limit':
 							if(strtotime($value) > strtotime($rule_value))
 								$this->addError("Hay un error en {$displayName}.");
+							break;
+						case 'name':
+							if ($rule_value)
+								if (!preg_match("/^[a-z ñáéíóú ,.'-]+$/i", $value))
+									$this->addError("El {$displayName} es invalido.");
+							break;
+						case 'numeric':
+							if(!is_numeric($value)){
+								$this->addError("{$displayName} debe ser en numeros.");
+							}
+							break;
+						case 'ageMin':
+							if ($rule_value) {
+								$diffAge = intval((strtotime("now") - strtotime($value)));
+								if (($diffAge / 31536000) < 18)
+									$this->addError("{$displayName} debe se mayor a 18 años.");
+							}
+							break;
+						case 'ageMax':
+							if ($rule_value) {
+								$diffAge = intval((strtotime("now") - strtotime($value)));
+								if (($diffAge / 31536000) >= 80)
+									$this->addError("{$displayName} debe se menor a 80 años.");
+							}
+							break;
+						case 'positive':
+							if ($rule_value) {
+								if ($value < 0)
+									$this->addError("{$displayName} debe ser un numero positivo.");
+							}
 							break;
 					}
 				}

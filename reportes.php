@@ -14,10 +14,10 @@
 			$validation = $validate->check($_POST, array(
 				'from' => array(
 					'date_limit' => Input::get('to'),
-					'display' => 'Día de inicio'
+					'display' => 'Rango'
 				),
 				'to' => array(
-					'display' => 'Día de fin'
+					'display' => 'Rango'
 				)
 			));
 			if ($validation->passed()) {
@@ -83,7 +83,7 @@
 												<tr>
 													<td><?php echo getData($value->id_events_type, 'events_type', 'name'); ?></td>
 													<td><?php echo $value->place;?></td>
-													<td><a href="eventos.php?view=<?php echo $value->id; ?>">Ver</a></td>
+													<td class="noPrint"><a href="eventos.php?view=<?php echo $value->id; ?>">Ver</a></td>
 												</tr>
 												<?php } ?>
 											</tbody>
@@ -121,17 +121,21 @@
 										<table class="table table-striped">
 											<thead>
 												<tr>
+													<th>Logo</th>
+													<th>Nombre</th>
 													<th>Especialidad</th>
 													<th>Estado</th>
-													<th>Opciones</th>
+													<th class="noPrint">Opciones</th>
 												</tr>
 											</thead>
 											<tbody>
 												<?php foreach ($data as $value) { ?>
 												<tr>
+													<td><img src="<?php echo $value->image; ?>" height="100" alt=""></td>
+													<td><?php echo $value->name; ?></td>
 													<td><?php echo $value->speciality; ?></td>
 													<td><?php echo ($value->state) ? 'Activo': 'Inactivo'; ?></td>
-													<td><a href="grupos.php?view=<?php echo $value->id; ?>">Ver</a></td>
+													<td class="noPrint"><a href="grupos.php?view=<?php echo $value->id; ?>">Ver</a></td>
 												</tr>
 												<?php } ?>
 											</tbody>
@@ -184,6 +188,7 @@
 										<table class="table table-striped">
 											<thead>
 												<tr>
+													<th>Foto</th>
 													<th>Cedula</th>
 													<th>Nombres</th>
 													<th>Apellidos</th>
@@ -191,20 +196,21 @@
 													<th>Gupo</th>
 													<th>Especialidad</th>
 													<th>Estado</th>
-													<th>Opciones</th>
+													<th class="noPrint">Opciones</th>
 												</tr>
 											</thead>
 											<tbody>
 												<?php foreach ($data as $value) { ?>
 												<tr>
+													<td><img src="<?php echo $value->photo; ?>" height="100" alt=""></td>
 													<td><?php echo $value->ci; ?></td>
 													<td><?php echo $value->firstName; ?></td>
 													<td><?php echo $value->lastName; ?></td>
 													<td><?php echo $value->profession; ?></td>
-													<td><?php echo $value->id_group; ?></td>
+													<td><?php echo getData($value->id_group, 'groups_2', 'name'); ?></th>
 													<td><?php echo $value->speciality; ?></td>
 													<td><?php echo ($value->state) ? 'Activo': 'Inactivo'; ?></td>
-													<td><a href="voluntarios.php?view=<?php echo $value->id; ?>">Ver</a></td>
+													<td class="noPrint"><a href="voluntarios.php?view=<?php echo $value->id; ?>">Ver</a></td>
 												</tr>
 												<?php } ?>
 											</tbody>
@@ -367,22 +373,22 @@
 						</div>
 						<div class="col-sm-4">
 							<div class="row">
-								<center><h2><a href="?reportType=groups">Grupos de Rescate</a></h2></center>
+								<center><h2><a href="?reportType=groups">Grupos Voluntarios</a></h2></center>
 							</div>
 						</div>
 						<div class="col-sm-4">
 							<div class="row">
-								<center><h2><a href="?reportType=volunteers">Valuntarios</a></h2></center>
+								<center><h2><a href="?reportType=volunteers">Voluntarios</a></h2></center>
 							</div>
 						</div>
 						<div class="col-sm-6">
 							<div class="row">
-								<center><h2><a href="?reportType=vehicles">Vehiculos</a></h2></center>
+								<center><h2><a href="?reportType=vehicles">Vehículos</a></h2></center>
 							</div>
 						</div>
 						<div class="col-sm-6">
 							<div class="row">
-								<center><h2><a href="?reportType=equipments">Equipos</a></h2></center>
+								<center><h2><a href="?reportType=equipments">Equipamientos</a></h2></center>
 							</div>
 						</div>
 					</div>

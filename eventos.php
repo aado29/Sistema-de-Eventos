@@ -49,15 +49,15 @@
 					'required' => TRUE,
 					'display' => 'Fecha de inicio'
 				),
-				'dueDate' => array(
-					'required' => TRUE,
-					'display' => 'Fecha de fin'
-				),
 				'place' => array(
 					'required' => TRUE,
 					'min' => 2,
 					'max' => 100,
 					'display' => 'Lugar'
+				),
+				'voluntary' => array(
+					'array' => TRUE,
+					'display' => 'Voluntario'
 				),
 				'results' => array(
 					'max' => 1200,
@@ -173,7 +173,7 @@
 								</select>
 							</div>
 							<div class="form-group">
-								<label for="equipment">Equipo:</label>
+								<label for="equipment">Equipamiento:</label>
 								<?php $sistem = new Sistem('equipments'); ?>
 								<select name="equipment[]" multiple class="form-control" id="equipment">
 									<?php if ($sistem->get(array('id', '>', 0))) : ?>
@@ -256,7 +256,7 @@
 									</select>
 								</div>
 								<div class="form-group">
-									<label for="equipment">Equipo:</label>
+									<label for="equipment">Equipamiento:</label>
 									<?php $sistem = new Sistem('equipments'); ?>
 									<select name="equipment[]" multiple class="form-control" id="equipment">
 										<?php if ($sistem->get(array('id', '>', 0))) :
@@ -296,37 +296,54 @@
 						<?php $sistem = new Sistem('events');
 						if ($sistem->get(array('id', '=', Input::get('view')))) :
 							$event = $sistem->data()[0]; ?>
-							<h2><?php echo getData($event->id_events_type, 'events_type', 'name'); ?>
-							<?php if($user->hasPermission('admin')) { ?>
-								<a href="?edit=<?php echo $event->id; ?>" class="btn btn-primary noPrint">Editar</a> 
-							<?php } ?>
-							<a href="?" class="btn noPrint" onclick="window.print()">Imprimir</a>
-							<a href="?" class="btn noPrint">Ver Eventos</a></h2>
-							<div class="col-sm-3">
+							<div class="col-xs-12">
+								<div class="row">
+									<div class="pull-right noPrint">
+										<?php if($user->hasPermission('admin')) { ?>
+											<a href="?edit=<?php echo $event->id; ?>" class="btn btn-primary">Editar</a> 
+										<?php } ?>
+										<a href="?" class="btn btn-success">Ver Eventos</a>
+										<a href="#" class="btn btn-success" onclick="window.print()">Imprimir</a>
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-12">
+								<div class="row">
+									<h2><?php echo getData($event->id_events_type, 'events_type', 'name'); ?></h2>
+								</div>
+							</div>
+							<div class="clearfix"></div>
+							<div class="col-xs-12">
+								<div class="row">
+									<h3>Lugar: </h3>
+									<p><?php echo $event->place; ?></p>
+								</div>
+							</div>
+							<div class="col-xs-3">
 								<div class="row">
 									<h3>Fecha de inicio: </h3>
 									<p><?php echo $event->startDate; ?></p>
 								</div>
 							</div>
-							<div class="col-sm-3">
+							<div class="col-xs-3">
 								<div class="row">
 									<h3>Hora de inicio: </h3>
 									<p><?php echo $event->startHour; ?></p>
 								</div>
 							</div>
-							<div class="col-sm-3">
+							<div class="col-xs-3">
 								<div class="row">
 									<h3>Fecha de fin: </h3>
 									<p><?php echo $event->dueDate; ?></p>
 								</div>
 							</div>
-							<div class="col-sm-3">
+							<div class="col-xs-3">
 								<div class="row">
 									<h3>Hora de fin: </h3>
 									<p><?php echo $event->dueHour; ?></p>
 								</div>
 							</div>
-							<div class="col-sm-4">
+							<div class="col-xs-4">
 								<div class="row">
 									<h3>Grupos: </h3>
 									<ul>
@@ -340,7 +357,21 @@
 									</ul>
 								</div>
 							</div>
-							<div class="col-sm-4">
+							<div class="col-xs-4">
+								<div class="row">
+									<h3>Equipamientos: </h3>
+									<ul>
+										<?php $relation = new Sistem('events_relations');
+										$relation->get(array('id_event', '=', $event->id));
+										foreach ($relation->data() as $select) {
+											if ($select->partaker == 'equipment') { ?>
+												<li><?php echo getData($select->id_partaker, 'equipments', 'name'); ?></li>
+											<?php }
+										} ?>
+									</ul>
+								</div>
+							</div>
+							<div class="col-xs-4">
 								<div class="row">
 									<h3>Voluntarios: </h3>
 									<ul>
@@ -355,33 +386,14 @@
 									</ul>
 								</div>
 							</div>
-							<div class="col-sm-4">
-								<div class="row">
-									<h3>Equipos: </h3>
-									<ul>
-										<?php $relation = new Sistem('events_relations');
-										$relation->get(array('id_event', '=', $event->id));
-										foreach ($relation->data() as $select) {
-											if ($select->partaker == 'equipment') { ?>
-												<li><?php echo getData($select->id_partaker, 'equipments', 'name'); ?></li>
-											<?php }
-										} ?>
-									</ul>
-								</div>
-							</div>
-							<div class="col-sm-6">
+							<div class="clearfix"></div>
+							<div class="col-xs-12">
 								<div class="row">
 									<h3>Descripción: </h3>
 									<p><?php echo $event->description; ?></p>
 								</div>
 							</div>
-							<div class="col-sm-6">
-								<div class="row">
-									<h3>Lugar: </h3>
-									<p><?php echo $event->place; ?></p>
-								</div>
-							</div>
-							<div class="col-sm-12">
+							<div class="col-xs-12">
 								<div class="row">
 									<h3>Resultados: </h3>
 									<p><?php echo ($event->results) ? $event->results: 'Vacío'; ?></p>
