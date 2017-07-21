@@ -11,29 +11,32 @@
 	if (Input::exists()) {
 		if (Token::check(Input::get('token'))) {
 			$validate = new Validate();
-			$validation = $validate->check($_POST, array(
-				'from' => array(
-					'date_limit' => Input::get('to'),
-					'display' => 'Rango'
-				),
-				'to' => array(
-					'display' => 'Rango'
-				)
-			));
-			if ($validation->passed()) {
-				if (!empty(Input::get('events')))
-					$data = getEventsReport(Input::get('from'), Input::get('to'), Input::get('type'));
-				if (!empty(Input::get('groups')))
-					$data = getGroupsReport(Input::get('speciality'), Input::get('state'));
-				if (!empty(Input::get('volunteers')))
-					$data = getVolunteersReport(Input::get('group'), Input::get('profession'), Input::get('speciality'),Input::get('state'));
-				if (!empty(Input::get('vehicles')))
-					$data = getVehiclesReport(Input::get('type'), Input::get('state'));
-				if (!empty(Input::get('equipments')))
-					$data = getEquipmentsReport(Input::get('type'), Input::get('state'));
-			} else {
-				$errors = $validation->errors();
+			if (!empty(Input::get('events'))) {
+				$validation = $validate->check($_POST, array(
+					'from' => array(
+						'date_limit' => Input::get('to'),
+						'display' => 'Rango'
+					),
+					'to' => array(
+						'display' => 'Rango'
+					)
+				));
+				if ($validation->passed()) {
+					if (!empty(Input::get('events')))
+						$data = getEventsReport(Input::get('from'), Input::get('to'), Input::get('type'));
+				} else {
+					$errors = $validation->errors();
+				}
 			}
+			if (!empty(Input::get('groups')))
+				$data = getGroupsReport(Input::get('speciality'), Input::get('state'));
+			if (!empty(Input::get('volunteers')))
+				$data = getVolunteersReport(Input::get('group'), Input::get('profession'), Input::get('speciality'),Input::get('state'));
+			if (!empty(Input::get('vehicles')))
+				$data = getVehiclesReport(Input::get('type'), Input::get('state'));
+			if (!empty(Input::get('equipments')))
+				$data = getEquipmentsReport(Input::get('type'), Input::get('state'));
+			
 		}
 	}
 	gettemplate('header'); 
